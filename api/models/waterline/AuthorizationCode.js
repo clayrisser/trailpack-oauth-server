@@ -20,7 +20,7 @@ export default class AuthorizationCode {
         type: 'string',
         required: true
       },
-      redirectUrl: {
+      redirectUri: {
         type: 'string',
         required: true
       },

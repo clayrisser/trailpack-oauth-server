@@ -13,17 +13,27 @@ export default class Client {
         unique: true,
         required: true
       },
-      secret: {
+      accessKey: {
+        type: 'string',
+        unique: true,
+        defaultsTo: randomstring.generate(32)
+      },
+      secretKey: {
         type: 'string',
         defaultsTo: randomstring.generate(32)
       },
       redirectUris: {
         type: 'array',
-        defaultsTo: []
+        defaultsTo: ['http://example.com']
       },
       grants: {
         type: 'array',
-        defaultsTo: []
+        defaultsTo: [
+          'password',
+          'client_credentials',
+          'authorization_code',
+          'refresh_token'
+        ]
       },
       user: {
         model: 'User',

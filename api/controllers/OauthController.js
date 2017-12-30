@@ -10,7 +10,7 @@ export default class OauthController extends Controller {
   authenticate(req, res, next) {
     const request = new Request(req);
     const response = new Response(res);
-    return oauth.authenticate(request, response).then((token) => {
+    return this.app.oauth.authenticate(request, response).then((token) => {
       return res.json({ token: token });
     }).catch(next);
   }
@@ -18,7 +18,7 @@ export default class OauthController extends Controller {
   authorize(req, res, next) {
     const request = new Request(req);
     const response = new Response(res);
-    return oauth.authorize(request, response).then((code) => {
+    return this.app.oauth.authorize(request, response).then((code) => {
       return res.json({ code: code });
     }).catch((err) => {
       if (err instanceof AccessDeniedError) {
@@ -32,7 +32,7 @@ export default class OauthController extends Controller {
   token(req, res, next) {
     const request = new Request(req);
     const response = new Response(res);
-    return oauth.token(request, response).then((token) => {
+    return this.app.oauth.token(request, response).then((token) => {
       return res.json({ token: token });
     }).catch(next);
   }

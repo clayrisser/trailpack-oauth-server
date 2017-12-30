@@ -29,6 +29,7 @@
     "bcrypt-nodejs": "0.0.3",
     "boom": "^7.1.1",
     "date-fns": "^1.29.0",
+    "jwt-simple": "^0.5.1",
     "lodash": "^4.17.4",
     "oauth2-server": "^3.0.0",
     "randomstring": "^1.1.5",

@@ -1,8 +1,18 @@
 export default {
   provides: {
     api: {
-      controllers: ['OauthController'],
-      services: ['OauthService']
+      controllers: [
+        'AuthController',
+        'ClientController',
+        'OauthController',
+        'UserController'
+      ],
+      services: [
+        'AuthService',
+        'ClientService',
+        'OauthService',
+        'UserService'
+      ]
     },
     config: []
   },

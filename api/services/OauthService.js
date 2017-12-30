@@ -1,6 +1,7 @@
 import Service from 'trails/service';
 import boom from 'boom';
 import dateFns from 'date-fns';
+import _ from 'lodash';
 
 export default class OauthService extends Service {
 
@@ -10,11 +11,13 @@ export default class OauthService extends Service {
       .populate('client')
       .populate('user')
       .then((accessToken) => {
+        const client = _.clone(accessToken.client);
+        client.id = client.accessKey;
         return {
           accessToken: accessToken.token,
           accessTokenExpiresAt: accessToken.expires,
           scope: accessToken.scope,
-          client: accessToken.client,
+          client: client,
           user: accessToken.user
         };
       });
@@ -26,42 +29,47 @@ export default class OauthService extends Service {
       .populate('client')
       .populate('user')
       .then((authorizationCode) => {
+        const client = _.clone(authorizationCode.client);
+        client.id = client.accessKey;
         return {
           code: authorizationCode.code,
           expiresAt: authorizationCode.expires,
           redirectUri: authorizationCode.redirectUri,
           scope: authorizationCode.scope,
-          client: authorizationCode.client,
+          client: client,
           user: authorizationCode.user
         };
       });
   }
 
-  getClient(clientId, secret) {
+  getClient(accessKey, secretKey) {
     const o = this.app.orm;
-    const query = { id: clientId };
-    if (secret) query.secret = secret;
-    return o.Client.findOne(query)
-      .then((client) => {
-        return {
-          id: client.id,
-          redirectUris: client.redirectUris,
-          grants: client.grants
-        };
-      });
+    let query = { id: accessKey };
+    if (secretKey) {
+      query = {
+        accessKey,
+        secretKey
+      }
+    }
+    return o.Client.findOne(query).then((client) => {
+      client.id = client.accessKey;
+      return client;
+    });
   }
 
   getRefreshToken(token) {
     const o = this.app.orm;
-    return o.AccessToken.findOne({ token: token })
+    return o.RefreshToken.findOne({ token: token })
       .populate('client')
       .populate('user')
       .then((refreshToken) => {
+        const client = _.clone(refreshToken.client);
+        client.id = client.accessKey;
         return {
           refreshToken: refreshToken.token,
           refreshTokenExpiresAt: refreshToken.expires,
           scope: refreshToken.scope,
-          client: refreshToken.client,
+          client: client,
           user: refreshToken.user
         };
       });
@@ -77,8 +85,10 @@ export default class OauthService extends Service {
 
   getUserFromClient(client) {
     const o = this.app.orm;
-    return o.User.findOne({ id: client.id }).then((user) => {
-      return user;
+    return o.Client.findOne({ accessKey: client.accessKey }).then((client) => {
+      return o.User.findOne({ id: client.id }).then((user) => {
+        return user;
+      });
     });
   }
 
@@ -98,49 +108,58 @@ export default class OauthService extends Service {
 
   saveAuthorizationCode(code, client, user) {
     const o = this.app.orm;
-    return o.AuthorizationCode.create({
-      code: code.authorizationCode,
-      expires: code.expiresAt,
-      redirectUri: code.redirectUri,
-      scope: code.scope,
-      client: client.id,
-      user: user.id
+    return o.Client.findOne({ accessKey: client.id }).then((client) => {
+      return o.AuthorizationCode.create({
+        code: code.authorizationCode,
+        expires: code.expiresAt,
+        redirectUri: code.redirectUri,
+        scope: code.scope,
+        client: client.id,
+        user: user.id
+      });
     });
   }
 
   saveToken(token, client, user) {
     const o = this.app.orm;
-    const promises = [
-      o.AccessToken.create({
-        token: token.accessToken,
-        expires: token.accessTokenExpiresAt,
-        scope: token.scope,
-        client: client.id,
-        user: user.id
-      }).populate('client').populate('user'),
-      o.RefreshToken.create({
-        token: token.refreshToken,
-        expires: token.refreshTokenExpiresAt,
-        scope: token.scope,
-        client: client.id,
-        user: user.id
-      })
-    ];
-    return Promise.all(promises).spread((accessToken, refreshToken) => {
-      return {
-        accessToken: accessToken.token,
-        accessTokenExpiresAt: accessToken.expires,
-        refreshToken: refreshToken.token,
-        refreshTokenExpiresAt: refreshToken.expires,
-        scope: accessToken.scope,
-        client: accessToken.client,
-        user: accessToken.user
-      };
+    return o.Client.findOne({ accessKey: client.id }).then((client) => {
+      const promises = [
+        o.AccessToken.create({
+          token: token.accessToken,
+          expires: token.accessTokenExpiresAt,
+          scope: token.scope,
+          client: client.id,
+          user: user.id
+        }).populate('client').populate('user'),
+        o.RefreshToken.create({
+          token: token.refreshToken,
+          expires: token.refreshTokenExpiresAt,
+          scope: token.scope,
+          client: client.id,
+          user: user.id
+        })
+      ];
+      return Promise.all(promises).then((results) => {
+        const accessToken = results[0];
+        const refreshToken = results[1];
+        return {
+          accessToken: accessToken.token,
+          accessTokenExpiresAt: accessToken.expires,
+          refreshToken: refreshToken.token,
+          refreshTokenExpiresAt: refreshToken.expires,
+          scope: accessToken.scope,
+          client: accessToken.client,
+          user: accessToken.user
+        };
+      });
     });
   }
 
   validateScope(user, client, scope) {
-    return true;
+    const o = this.app.orm;
+    return o.Client.findOne({ accessKey: client.id }).then((client) => {
+      return true;
+    });
   }
 
   verifyScope(token, scope) {

@@ -1,6 +1,6 @@
 export default [
   {
-    method: 'GET',
+    method: 'POST',
     path: '/authenticate',
     handler: 'OauthController.authenticate'
   },
@@ -10,8 +10,23 @@ export default [
     handler: 'OauthController.authorize'
   },
   {
-    method: 'GET',
+    method: 'POST',
     path: '/token',
     handler: 'OauthController.token'
+  },
+  {
+    method: 'POST',
+    path: '/register',
+    handler: 'AuthController.register'
+  },
+  {
+    method: 'POST',
+    path: '/login',
+    handler: 'AuthController.login'
+  },
+  {
+    method: 'POST',
+    path: '/client',
+    handler: 'ClientController.create'
   }
 ];

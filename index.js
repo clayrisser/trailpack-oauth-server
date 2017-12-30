@@ -45,8 +45,15 @@ module.exports = class OauthTrailpack extends Trailpack {
         validateScope: s.OauthService.validateScope,
         verifyScope: s.OauthService.verifyScope
       },
+      addAcceptedScopesHeader: oauth.addAcceptedScopesHeader,
+      addAuthorizedScopesHeader: oauth.addAuthorizedScopesHeader,
       allowBearerTokensInQueryString: oauth.allowBearerTokensInQueryString,
-      accessTokenLifetime: oauth.accessTokenLifetime
+      allowEmptyState: oauth.allowEmptyState,
+      authorizationCodeLifetime: oauth.authorizationCodeLifetime,
+      accessTokenLifetime: oauth.accessTokenLifetime,
+      refreshTokenLifetime: oauth.refreshTokenLifetime,
+      allowExtendedTokenAttributes: oauth.allowExtendedTokenAttributes,
+      requireClientAuthentication: oauth.requireClientAuthentication
     });
   }
 };
