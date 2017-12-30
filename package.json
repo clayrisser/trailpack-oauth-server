@@ -26,9 +26,12 @@
     "login"
   ],
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "boom": "^7.1.1",
     "date-fns": "^1.29.0",
     "lodash": "^4.17.4",
     "oauth2-server": "^3.0.0",
+    "randomstring": "^1.1.5",
     "trailpack": "^2.1.3"
   },
   "devDependencies": {},

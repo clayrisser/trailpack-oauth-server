@@ -29,7 +29,7 @@ module.exports = {
         model: 'User',
         required: true,
         via: 'clients'
-      }
+      },
       authorizationCodes: {
         collection: 'AuthorizationCode',
         via: 'client'
