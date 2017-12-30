@@ -1,3 +1,3 @@
-exports.OauthService = require('./OauthService');
-exports.UserService = require('./UserService');
-exports.ClientService = require('./ClientService');
+export const OauthService = require('./OauthService').default;
+export const UserService = require('./UserService').default;
+export const ClientService = require('./ClientService').default;

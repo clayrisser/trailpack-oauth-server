@@ -1,11 +1,11 @@
-const Controller = require('trails/controller');
-const OAuth2Server = require('oauth2-server');
-const AccessDeniedError = require('oauth2-server/lib/errors/access-denied-error');
+import Controller from 'trails/controller';
+import OAuth2Server from 'oauth2-server';
+import AccessDeniedError from 'oauth2-server/lib/errors/access-denied-error';
 
 const Request = OAuth2Server.Request;
 const Response = OAuth2Server.Response;
 
-module.exports = class OauthController extends Controller {
+export default class OauthController extends Controller {
 
   authenticate(req, res, next) {
     const request = new Request(req);
@@ -36,4 +36,4 @@ module.exports = class OauthController extends Controller {
       return res.json({ token: token });
     }).catch(next);
   }
-};
+}

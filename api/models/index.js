@@ -1,5 +1,5 @@
-exports.AccessToken = require('./AccessToken');
-exports.AuthorizationCode = require('./AuthorizationCode');
-exports.Client = require('./Client');
-exports.RefreshToken = require('./RefreshToken');
-exports.User = require('./User');
+export const AccessToken = require('./AccessToken').default;
+export const AuthorizationCode = require('./AuthorizationCode').default;
+export const Client = require('./Client').default;
+export const RefreshToken = require('./RefreshToken').default;
+export const User = require('./User').default;

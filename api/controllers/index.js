@@ -1,1 +1,1 @@
-exports.OauthController = require('./OauthController');
+export const OauthController = require('./OauthController').default;

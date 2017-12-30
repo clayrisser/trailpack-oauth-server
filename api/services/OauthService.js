@@ -1,8 +1,8 @@
-const Service = require('trails/service');
-const dateFns = require('date-fns');
+import Service from 'trails/service';
 import boom from 'boom';
+import dateFns from 'date-fns';
 
-module.exports = class OauthService extends Service {
+export default class OauthService extends Service {
 
   getAccessToken(token) {
     const o = this.app.orm;
@@ -149,4 +149,4 @@ module.exports = class OauthService extends Service {
     const authorizedScopes = token.scope.split(' ');
     return requestedScopes.every(s => authorizedScopes.indexOf(s) >= 0);
   }
-};
+}

@@ -1,7 +1,7 @@
-const Trailpack = require('trailpack');
-const _ = require('lodash');
-const OAuth2Server = require('oauth2-server');
-const routes = require('./config/routes');
+import Trailpack from 'trailpack';
+import _ from 'lodash';
+import OAuth2Server from 'oauth2-server';
+import routes from './config/routes';
 
 module.exports = class OauthTrailpack extends Trailpack {
 

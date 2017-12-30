@@ -1,15 +1,17 @@
-const Model = require('trails/model')
+import Model from 'trails/model';
 
-module.exports = class User extends Model {
+export default class User extends Model {
   static config(app, orm) {
     if (app) {
-      return require('./' + app.config.database.orm).Client.config(app, orm)
+      const Client = require('./' + app.config.database.orm).Client;
+      return new Client().config(app, orm);
     }
   }
 
   static schema(app, orm) {
     if (app) {
-      return require('./' + app.config.database.orm).Client.schema(app, orm)
+      const Client = require('./' + app.config.database.orm).Client;
+      return new Client().schema(app, orm);
     }
   }
 }

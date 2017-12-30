@@ -1,15 +1,17 @@
-const Model = require('trails/model')
+import Model from 'trails/model';
 
-module.exports = class User extends Model {
+export default class User extends Model {
   static config(app, orm) {
     if (app) {
-      return require('./' + app.config.database.orm).RefreshToken.config(app, orm)
+      const RefreshToken = require('./' + app.config.database.orm).RefreshToken;
+      return new RefreshToken().config(app, orm);
     }
   }
 
   static schema(app, orm) {
     if (app) {
-      return require('./' + app.config.database.orm).RefreshToken.schema(app, orm)
+      const RefreshToken = require('./' + app.config.database.orm).RefreshToken;
+      return new RefreshToken().schema(app, orm);
     }
   }
 }

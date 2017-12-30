@@ -1,12 +1,11 @@
 import dateFns from 'date-fns'
 
-module.exports = {
+export default class AccessToken {
+  config(app) {
+    return undefined;
+  }
 
-  config: (app) => {
-    return undefined
-  },
-
-  schema: (app) => {
+  schema(app) {
     return {
       token: {
         type: 'string',
@@ -30,6 +29,6 @@ module.exports = {
         required: true,
         via: 'accessTokens'
       }
-    }
+    };
   }
-};
+}

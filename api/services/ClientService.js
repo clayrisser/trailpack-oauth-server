@@ -1,7 +1,7 @@
-const Service = require('trails/service')
+import Service from 'trails/service';
 import randomstring from 'randomstring';
 
-module.exports = class ClientService extends Service {
+export default class ClientService extends Service {
 
   create({ name, userId }) {
     const o = this.app.orm;
@@ -28,4 +28,4 @@ module.exports = class ClientService extends Service {
   destroy(clientId) {
     return o.Client.destroy(clientId)
   }
-};
+}

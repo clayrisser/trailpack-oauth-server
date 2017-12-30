@@ -1,6 +1,6 @@
-const Service = require('trails/service');
+import Service from 'trails/service';
 
-module.exports = class UserService extends Service {
+export default class UserService extends Service {
 
   create({ username, password }) {
     const o = this.app.orm;
@@ -32,4 +32,4 @@ module.exports = class UserService extends Service {
   destroy(userId) {
     return o.User.destroy(userId)
   }
-};
+}

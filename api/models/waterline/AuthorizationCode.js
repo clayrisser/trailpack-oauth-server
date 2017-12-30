@@ -1,12 +1,12 @@
 import dateFns from 'date-fns';
 
-module.exports = {
+export default class AuthorizationCode {
 
-  config: (app) => {
+  config(app) {
     return undefined
-  },
+  }
 
-  schema: (app) => {
+  schema(app) {
     return {
       code: {
         type: 'string',
@@ -34,6 +34,6 @@ module.exports = {
         required: true,
         via: 'authorizationCodes'
       }
-    }
+    };
   }
-};
+}

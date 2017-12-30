@@ -1,2 +1,2 @@
-exports.trailpack = require('./trailpack');
-exports.oauth = require('./oauth');
+export const trailpack = require('./trailpack').default;
+export const oauth = require('./oauth').default;

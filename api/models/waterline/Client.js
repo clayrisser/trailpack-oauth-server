@@ -1,12 +1,12 @@
 import randomstring from 'randomstring';
 
-module.exports = {
+export default class Client {
 
-  config: (app) => {
-    return undefined
-  },
+  config(app) {
+    return undefined;
+  }
 
-  schema: (app) => {
+  schema(app) {
     return {
       name: {
         type: 'string',
@@ -42,6 +42,6 @@ module.exports = {
         collection: 'AccessToken',
         via: 'client'
       }
-    }
+    };
   }
-};
+}

@@ -1,12 +1,12 @@
 import bCrypt from 'bcrypt-nodejs';
 
-module.exports = {
+export default class User {
 
-  config: app => {
-    return undefined
-  },
+  config(app) {
+    return undefined;
+  }
 
-  schema: app => {
+  schema(app) {
     return {
       username: {
         type: 'string',
@@ -42,6 +42,6 @@ module.exports = {
         if (!this.passwordHash) throw boom.badRequest('Password not set');
         return bCrypt.compareSync(password, this.passwordHash);
       }
-    }
+    };
   }
-};
+}
