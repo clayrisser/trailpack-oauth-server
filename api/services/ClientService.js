@@ -3,23 +3,29 @@ import randomstring from 'randomstring';
 
 module.exports = class ClientService extends Service {
 
-  update() {
-
+  create({ name, userId }) {
+    const o = this.app.orm;
+    return o.Client.create({
+      name: name,
+      user: userId
+    }).then((client) => {
+      return client;
+    });
   }
 
-  findOne() {
+  update(clientId, properties) {
+    return o.Client.update(clientId, properties);
+  }
 
+  findOne(clientId) {
+    return o.Client.findOne(clientId);
   }
 
   find() {
-
+    return o.Client.find();
   }
 
-  destroy() {
-
-  }
-
-  generateSecret() {
-
+  destroy(clientId) {
+    return o.Client.destroy(clientId)
   }
 };

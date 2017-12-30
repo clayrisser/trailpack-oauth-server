@@ -1,10 +1,12 @@
+import randomstring from 'randomstring';
+
 module.exports = {
 
-  config: app => {
+  config: (app) => {
     return undefined
   },
 
-  schema: app => {
+  schema: (app) => {
     return {
       name: {
         type: 'string',
@@ -13,7 +15,7 @@ module.exports = {
       },
       secret: {
         type: 'string',
-        required: true
+        defaultsTo: randomstring.generate(32)
       },
       redirectUris: {
         type: 'array',

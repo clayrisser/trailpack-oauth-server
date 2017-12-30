@@ -1,3 +1,5 @@
+import dateFns from 'date-fns'
+
 module.exports = {
 
   config: (app) => {
@@ -12,7 +14,7 @@ module.exports = {
       },
       expires: {
         type: 'datetime',
-        required: true
+        defaultsTo: dateFns.addDays(new Date(), 30)
       },
       scope: {
         type: 'string',

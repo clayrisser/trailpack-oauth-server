@@ -1,3 +1,5 @@
+import bCrypt from 'bcrypt-nodejs';
+
 module.exports = {
 
   config: app => {
@@ -10,6 +12,9 @@ module.exports = {
         type: 'string',
         unique: true,
         required: true
+      },
+      passwordHash: {
+        type: 'string'
       },
       clients: {
         collection: 'Client',
@@ -26,6 +31,16 @@ module.exports = {
       accessTokens: {
         collection: 'AccessToken',
         via: 'client'
+      },
+
+      setPassword: function setPassword(password) {
+        this.passwordHash = bCrypt.hashSync(password, bCrypt.genSaltSync(10), null)
+        return this.passwordHash;
+      },
+
+      validatePassword: function validatePassword(password) {
+        if (!this.passwordHash) throw boom.badRequest('Password not set');
+        return bCrypt.compareSync(password, this.passwordHash);
       }
     }
   }

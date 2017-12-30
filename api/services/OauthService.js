@@ -1,5 +1,6 @@
 const Service = require('trails/service');
 const dateFns = require('date-fns');
+import boom from 'boom';
 
 module.exports = class OauthService extends Service {
 
@@ -67,12 +68,16 @@ module.exports = class OauthService extends Service {
   }
 
   getUser(username, password) {
-
+    const o = this.app.orm;
+    return o.User.findOne({ username: username }).then((user) => {
+      if (!user.validatePassword(password)) throw boom.badRequest('Invalid password');
+      return user;
+    });
   }
 
   getUserFromClient(client) {
     const o = this.app.orm;
-    return o.User.findOne({ id: client.user_id }).then((user) => {
+    return o.User.findOne({ id: client.id }).then((user) => {
       return user;
     });
   }
@@ -94,12 +99,12 @@ module.exports = class OauthService extends Service {
   saveAuthorizationCode(code, client, user) {
     const o = this.app.orm;
     return o.AuthorizationCode.create({
-      code: code.authorization_code,
-      expires: dateFns.addDays(new Date(), 30),
-      redirectUri: code.redirect_uri,
+      code: code.authorizationCode,
+      expires: code.expiresAt,
+      redirectUri: code.redirectUri,
       scope: code.scope,
-      client: client.client_id,
-      user: user.user_id
+      client: client.id,
+      user: user.id
     });
   }
 
@@ -128,8 +133,8 @@ module.exports = class OauthService extends Service {
         refreshToken: refreshToken.token,
         refreshTokenExpiresAt: refreshToken.expires,
         scope: accessToken.scope,
-        client: { id: accessToken.client.id },
-        user: { id: accessToken.user.id }
+        client: accessToken.client,
+        user: accessToken.user
       };
     });
   }
