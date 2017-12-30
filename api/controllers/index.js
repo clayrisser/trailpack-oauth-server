@@ -1,0 +1,1 @@
+exports.OauthController = require('./OauthController');
