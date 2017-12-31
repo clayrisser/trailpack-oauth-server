@@ -3,12 +3,13 @@ import randomstring from 'randomstring';
 
 export default class ClientService extends Service {
 
-  create(token, { name }) {
+  create(token, { name, redirectUris }) {
     const o = this.app.orm;
     const s = this.app.services;
     return s.AuthService.findAuthed(token).then((user) => {
       return o.Client.create({
-        name: name,
+        name,
+        redirectUris,
         user: user.id
       }).then((client) => {
         return client;

@@ -24,7 +24,7 @@ export default class Client {
       },
       redirectUris: {
         type: 'array',
-        defaultsTo: ['http://example.com']
+        required: true
       },
       grants: {
         type: 'array',

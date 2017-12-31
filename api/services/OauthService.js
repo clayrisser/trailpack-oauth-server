@@ -7,7 +7,7 @@ export default class OauthService extends Service {
 
   getAccessToken(token) {
     const o = this.app.orm;
-    return o.AccessToken.findOne({ token: token })
+    return o.AccessToken.findOne({ token })
       .populate('client')
       .populate('user')
       .then((accessToken) => {
@@ -25,7 +25,7 @@ export default class OauthService extends Service {
 
   getAuthorizationCode(code) {
     const o = this.app.orm;
-    return o.AuthorizationCode.findOne({ code: code })
+    return o.AuthorizationCode.findOne({ code })
       .populate('client')
       .populate('user')
       .then((authorizationCode) => {
@@ -62,7 +62,7 @@ export default class OauthService extends Service {
 
   getRefreshToken(token) {
     const o = this.app.orm;
-    return o.RefreshToken.findOne({ token: token })
+    return o.RefreshToken.findOne({ token })
       .populate('client')
       .populate('user')
       .then((refreshToken) => {
@@ -80,7 +80,7 @@ export default class OauthService extends Service {
 
   getUser(username, password) {
     const o = this.app.orm;
-    return o.User.findOne({ username: username }).then((user) => {
+    return o.User.findOne({ username }).then((user) => {
       if (!user.validatePassword(password)) throw boom.badRequest('Invalid password');
       return user;
     });
@@ -97,14 +97,14 @@ export default class OauthService extends Service {
 
   revokeAuthorizationCode(code) {
     const o = this.app.orm;
-    return o.AuthorizationCode.destroy({ code: code }).then((authorizationCode) => {
+    return o.AuthorizationCode.destroy({ code }).then((authorizationCode) => {
       return !!authorizationCode;
     });
   }
 
   revokeToken(token) {
     const o = this.app.orm;
-    return o.RefreshToken.destroy({ token: token }).then((refreshToken) => {
+    return o.RefreshToken.destroy({ token }).then((refreshToken) => {
       return !!refreshToken;
     });
   }
