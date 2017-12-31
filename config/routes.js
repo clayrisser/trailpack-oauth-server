@@ -1,27 +1,27 @@
 export default [
   {
-    method: 'POST',
-    path: '/authenticate',
+    method: 'GET',
+    path: '/oauth/authenticate',
     handler: 'OauthController.authenticate'
   },
   {
     method: 'GET',
-    path: '/authorize',
+    path: '/oauth/authorize',
     handler: 'OauthController.authorize'
   },
   {
     method: 'POST',
-    path: '/token',
+    path: '/oauth/token',
     handler: 'OauthController.token'
   },
   {
     method: 'POST',
-    path: '/register',
+    path: '/auth/register',
     handler: 'AuthController.register'
   },
   {
     method: 'POST',
-    path: '/login',
+    path: '/auth/login',
     handler: 'AuthController.login'
   },
   {

@@ -1,7 +1,6 @@
 import Trailpack from 'trailpack';
 import _ from 'lodash';
 import OAuth2Server from 'oauth2-server';
-import routes from './config/routes';
 
 module.exports = class OauthTrailpack extends Trailpack {
 
@@ -20,16 +19,12 @@ module.exports = class OauthTrailpack extends Trailpack {
     if (!_.includes(_.keys(this.app.packs), 'waterline')) {
       return Promise.reject(new Error('This Trailpack only works with waterline'));
     }
-    if (!this.app.config.oauth) {
-      return Promise.reject(new Error('No configuration found at config.oauth'));
-    }
     return Promise.resolve();
   }
 
   configure() {
     const s = this.app.services;
-    this.app.config.routes = this.app.config.routes.concat(routes);
-    const oauth = this.app.config.oauth;
+    const c = this.app.config;
     this.app.oauth = new OAuth2Server({
       model: {
         getAccessToken: s.OauthService.getAccessToken,
@@ -45,15 +40,15 @@ module.exports = class OauthTrailpack extends Trailpack {
         validateScope: s.OauthService.validateScope,
         verifyScope: s.OauthService.verifyScope
       },
-      addAcceptedScopesHeader: oauth.addAcceptedScopesHeader,
-      addAuthorizedScopesHeader: oauth.addAuthorizedScopesHeader,
-      allowBearerTokensInQueryString: oauth.allowBearerTokensInQueryString,
-      allowEmptyState: oauth.allowEmptyState,
-      authorizationCodeLifetime: oauth.authorizationCodeLifetime,
-      accessTokenLifetime: oauth.accessTokenLifetime,
-      refreshTokenLifetime: oauth.refreshTokenLifetime,
-      allowExtendedTokenAttributes: oauth.allowExtendedTokenAttributes,
-      requireClientAuthentication: oauth.requireClientAuthentication
+      addAcceptedScopesHeader: c.oauth.addAcceptedScopesHeader,
+      addAuthorizedScopesHeader: c.oauth.addAuthorizedScopesHeader,
+      allowBearerTokensInQueryString: c.oauth.allowBearerTokensInQueryString,
+      allowEmptyState: c.oauth.allowEmptyState,
+      authorizationCodeLifetime: c.oauth.authorizationCodeLifetime,
+      accessTokenLifetime: c.oauth.accessTokenLifetime,
+      refreshTokenLifetime: c.oauth.refreshTokenLifetime,
+      allowExtendedTokenAttributes: c.oauth.allowExtendedTokenAttributes,
+      requireClientAuthentication: c.oauth.requireClientAuthentication
     });
   }
 };

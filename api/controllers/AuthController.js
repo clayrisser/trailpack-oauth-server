@@ -2,7 +2,7 @@ import Controller from 'trails/controller';
 
 export default class AuthController extends Controller {
 
- register(req, res, next) {
+  register(req, res, next) {
     const s = this.app.services;
     return s.AuthService.register(req.body).then(async (user) => {
       const token = s.AuthService.encodeToken(user.id);
