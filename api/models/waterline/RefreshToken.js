@@ -10,6 +10,7 @@ export default class RefreshToken {
     return {
       token: {
         type: 'string',
+        unique: true,
         required: true
       },
       expires: {

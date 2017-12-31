@@ -52,6 +52,9 @@ export default class OauthService extends Service {
       }
     }
     return o.Client.findOne(query).then((client) => {
+      if (!client) return o.Client.findOne({ accessKey });
+      return client;
+    }).then((client) => {
       client.id = client.accessKey;
       return client;
     });
@@ -101,7 +104,7 @@ export default class OauthService extends Service {
 
   revokeToken(token) {
     const o = this.app.orm;
-    return o.RefreshToken.destroy({ token: token }).then((revokeToken) => {
+    return o.RefreshToken.destroy({ token: token }).then((refreshToken) => {
       return !!refreshToken;
     });
   }
@@ -130,27 +133,35 @@ export default class OauthService extends Service {
           scope: token.scope,
           client: client.id,
           user: user.id
-        }).populate('client').populate('user'),
-        o.RefreshToken.create({
+        }).populate('client').populate('user')
+      ];
+      if (token.refreshToken) {
+        promises.push(o.RefreshToken.create({
           token: token.refreshToken,
           expires: token.refreshTokenExpiresAt,
           scope: token.scope,
           client: client.id,
           user: user.id
-        })
-      ];
+        }));
+      }
       return Promise.all(promises).then((results) => {
         const accessToken = results[0];
-        const refreshToken = results[1];
-        return {
+        let refreshToken = null;
+        if (results.length > 1) refreshToken = results[1];
+        let response = {
           accessToken: accessToken.token,
           accessTokenExpiresAt: accessToken.expires,
-          refreshToken: refreshToken.token,
-          refreshTokenExpiresAt: refreshToken.expires,
           scope: accessToken.scope,
           client: accessToken.client,
           user: accessToken.user
         };
+        if (refreshToken) {
+          response = _.assign({}, response, {
+            refreshToken: refreshToken.token,
+            refreshTokenExpiresAt: refreshToken.expires
+          });
+        }
+        return response;
       });
     });
   }

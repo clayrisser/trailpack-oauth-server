@@ -30,7 +30,6 @@ export default class Client {
         type: 'array',
         defaultsTo: [
           'password',
-          'client_credentials',
           'authorization_code',
           'refresh_token'
         ]

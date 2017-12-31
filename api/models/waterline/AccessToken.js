@@ -9,6 +9,7 @@ export default class AccessToken {
     return {
       token: {
         type: 'string',
+        unique: true,
         required: true
       },
       expires: {
