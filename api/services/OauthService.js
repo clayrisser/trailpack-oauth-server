@@ -119,7 +119,17 @@ export default class OauthService extends Service {
         scope: code.scope,
         client: client.id,
         user: user.id
-      });
+      }).populate('client').populate('user')
+        .then((authorizationCode) => {
+          return {
+            authorizationCode: authorizationCode.code,
+            expiresAt: authorizationCode.expires,
+            redirectUri: authorizationCode.redirectUri,
+            scope: authorizationCode.scope,
+            client: authorizationCode.client,
+            user: authorizationCode.user
+          }
+        });
     });
   }
 
