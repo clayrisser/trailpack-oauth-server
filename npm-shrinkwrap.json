@@ -1,6 +1,6 @@
 {
   "name": "trailpack-oauth",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -5520,9 +5520,19 @@
       "dev": true
     },
     "isemail": {
-      "version": "2.2.1",
-      "resolved": "https://registry.npmjs.org/isemail/-/isemail-2.2.1.tgz",
-      "integrity": "sha1-A1PT2aYpUQgMJiwqoKQrjqjp4qY="
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/isemail/-/isemail-3.0.0.tgz",
+      "integrity": "sha512-rz0ng/c+fX+zACpLgDB8fnUQ845WSU06f4hlhk4K8TJxmR6f5hyvitu9a9JdMD7aq/P4E0XdG1uaab2OiXgHlA==",
+      "requires": {
+        "punycode": "2.1.0"
+      },
+      "dependencies": {
+        "punycode": {
+          "version": "2.1.0",
+          "resolved": "https://registry.npmjs.org/punycode/-/punycode-2.1.0.tgz",
+          "integrity": "sha1-X4Y+3Im5bbCQdLrXlHvwkFbKTn0="
+        }
+      }
     },
     "isexe": {
       "version": "2.0.0",
@@ -5797,21 +5807,13 @@
       }
     },
     "joi": {
-      "version": "10.6.0",
-      "resolved": "https://registry.npmjs.org/joi/-/joi-10.6.0.tgz",
-      "integrity": "sha512-hBF3LcqyAid+9X/pwg+eXjD2QBZI5eXnBFJYaAkH4SK3mp9QSRiiQnDYlmlz5pccMvnLcJRS4whhDOTCkmsAdQ==",
+      "version": "13.1.0",
+      "resolved": "https://registry.npmjs.org/joi/-/joi-13.1.0.tgz",
+      "integrity": "sha512-x6pGmDYI6hwNi3skP6irQqRaJntzeaWmZ4rsnjc/NTlf6P5Gp3Aw/O8REe8oLJ6wPhrzd9K3RW1m3Yz/Hx4Weg==",
       "requires": {
-        "hoek": "4.2.0",
-        "isemail": "2.2.1",
-        "items": "2.1.1",
-        "topo": "2.0.2"
-      },
-      "dependencies": {
-        "hoek": {
-          "version": "4.2.0",
-          "resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.0.tgz",
-          "integrity": "sha512-v0XCLxICi9nPfYrS9RL8HbYnXi9obYAeLbSP00BmnZwCK9+Ih9WOjoZ8YoHCoav2csqn4FOz4Orldsy2dmDwmQ=="
-        }
+        "hoek": "5.0.2",
+        "isemail": "3.0.0",
+        "topo": "3.0.0"
       }
     },
     "js-base64": {
@@ -10950,18 +10952,11 @@
       "dev": true
     },
     "topo": {
-      "version": "2.0.2",
-      "resolved": "https://registry.npmjs.org/topo/-/topo-2.0.2.tgz",
-      "integrity": "sha1-zVYVdSU5BXwNwEkaYhw7xvvh0YI=",
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/topo/-/topo-3.0.0.tgz",
+      "integrity": "sha512-Tlu1fGlR90iCdIPURqPiufqAlCZYzLjHYVVbcFWDMcX7+tK8hdZWAfsMrD/pBul9jqHHwFjNdf1WaxA9vTRRhw==",
       "requires": {
-        "hoek": "4.2.0"
-      },
-      "dependencies": {
-        "hoek": {
-          "version": "4.2.0",
-          "resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.0.tgz",
-          "integrity": "sha512-v0XCLxICi9nPfYrS9RL8HbYnXi9obYAeLbSP00BmnZwCK9+Ih9WOjoZ8YoHCoav2csqn4FOz4Orldsy2dmDwmQ=="
-        }
+        "hoek": "5.0.2"
       }
     },
     "toposort": {
@@ -11007,6 +11002,30 @@
           "version": "4.2.0",
           "resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.0.tgz",
           "integrity": "sha512-v0XCLxICi9nPfYrS9RL8HbYnXi9obYAeLbSP00BmnZwCK9+Ih9WOjoZ8YoHCoav2csqn4FOz4Orldsy2dmDwmQ=="
+        },
+        "isemail": {
+          "version": "2.2.1",
+          "resolved": "https://registry.npmjs.org/isemail/-/isemail-2.2.1.tgz",
+          "integrity": "sha1-A1PT2aYpUQgMJiwqoKQrjqjp4qY="
+        },
+        "joi": {
+          "version": "10.6.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-10.6.0.tgz",
+          "integrity": "sha512-hBF3LcqyAid+9X/pwg+eXjD2QBZI5eXnBFJYaAkH4SK3mp9QSRiiQnDYlmlz5pccMvnLcJRS4whhDOTCkmsAdQ==",
+          "requires": {
+            "hoek": "4.2.0",
+            "isemail": "2.2.1",
+            "items": "2.1.1",
+            "topo": "2.0.2"
+          }
+        },
+        "topo": {
+          "version": "2.0.2",
+          "resolved": "https://registry.npmjs.org/topo/-/topo-2.0.2.tgz",
+          "integrity": "sha1-zVYVdSU5BXwNwEkaYhw7xvvh0YI=",
+          "requires": {
+            "hoek": "4.2.0"
+          }
         },
         "trails-controller": {
           "version": "2.0.0",

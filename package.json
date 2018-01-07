@@ -16,16 +16,18 @@
     "umd"
   ],
   "scripts": {
-    "build": "node ./node_modules/jnwb/lib/bin/nwb build-web-module",
+    "build": "npm run clean && node ./node_modules/jnwb/lib/bin/nwb build-web-module && cp package.json ./lib",
     "clean": "node ./node_modules/jnwb/lib/bin/nwb clean-module",
     "test": "node ./node_modules/jnwb/lib/bin/nwb test",
     "test:coverage": "node ./node_modules/jnwb/lib/bin/nwb test --coverage",
-    "test:watch": "node ./node_modules/jnwb/lib/bin/nwb test --server"
+    "test:watch": "node ./node_modules/jnwb/lib/bin/nwb test --server",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "boom": "^7.1.1",
     "date-fns": "^1.29.0",
+    "joi": "^13.1.0",
     "jwt-simple": "^0.5.1",
     "lodash": "^4.17.4",
     "oauth2-server": "^3.0.0",
