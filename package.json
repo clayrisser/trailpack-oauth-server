@@ -1,6 +1,6 @@
 {
   "name": "trailpack-oauth",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Trailpack to run OAuth 2 server on Trails application",
   "homepage": "https://github.com/jamrizzi/trailpack-oauth",
   "author": {

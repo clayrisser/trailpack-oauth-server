@@ -1,6 +1,6 @@
 {
   "name": "trailpack-oauth",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -10992,10 +10992,10 @@
         "joi": "10.6.0",
         "lodash": "4.17.4",
         "mkdirp": "0.5.1",
-        "trails-controller": "2.0.0",
-        "trails-model": "2.0.1",
-        "trails-policy": "2.0.0",
-        "trails-service": "2.0.0"
+        "trails-controller": "https://registry.npmjs.org/trails-controller/-/trails-controller-2.0.0.tgz",
+        "trails-model": "https://registry.npmjs.org/trails-model/-/trails-model-2.0.1.tgz",
+        "trails-policy": "https://registry.npmjs.org/trails-policy/-/trails-policy-2.0.0.tgz",
+        "trails-service": "https://registry.npmjs.org/trails-service/-/trails-service-2.0.0.tgz"
       },
       "dependencies": {
         "hoek": {
@@ -11028,20 +11028,20 @@
           }
         },
         "trails-controller": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "https://registry.npmjs.org/trails-controller/-/trails-controller-2.0.0.tgz",
+          "integrity": "sha1-482oX5UcpCXViWIBMFuYQjyk3P8="
         },
         "trails-model": {
-          "version": "2.0.1",
-          "bundled": true
+          "version": "https://registry.npmjs.org/trails-model/-/trails-model-2.0.1.tgz",
+          "integrity": "sha1-xEz/j+qRmGlK8RFSV9J90XqM3WE="
         },
         "trails-policy": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "https://registry.npmjs.org/trails-policy/-/trails-policy-2.0.0.tgz",
+          "integrity": "sha1-iK23mTSCn7gUuKKNH4NXm5pBrE4="
         },
         "trails-service": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "https://registry.npmjs.org/trails-service/-/trails-service-2.0.0.tgz",
+          "integrity": "sha1-w37P8dkQE62RNv2S5YXpGtzT8Bk="
         }
       }
     },

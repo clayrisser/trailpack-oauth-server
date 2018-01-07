@@ -5,7 +5,6 @@ import policies from './policies';
 
 export default {
   services,
-  models,
   controllers,
   policies
 };

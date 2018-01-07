@@ -1,6 +1,6 @@
 import Model from 'trails/model';
 
-export default class User extends Model {
+export default class RefreshToken extends Model {
   static config(app, orm) {
     if (app) {
       const RefreshToken = require('./' + app.config.database.orm).RefreshToken;
