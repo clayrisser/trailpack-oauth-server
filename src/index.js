@@ -2,7 +2,7 @@ import Trailpack from 'trailpack';
 import _ from 'lodash';
 import OAuth2Server from 'oauth2-server';
 
-module.exports = class OauthTrailpack extends Trailpack {
+export default class OauthTrailpack extends Trailpack {
 
   constructor(app) {
     super(app, {

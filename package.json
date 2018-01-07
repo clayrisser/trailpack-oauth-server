@@ -1,6 +1,6 @@
 {
   "name": "trailpack-oauth",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Trailpack to run OAuth 2 server on Trails application",
   "homepage": "https://github.com/jamrizzi/trailpack-oauth",
   "author": {
@@ -8,23 +8,20 @@
     "email": "jam@jamrizzi.com",
     "url": "https://jam.jamrizzi.com"
   },
-  "main": "index.js",
-  "keywords": [
-    "trailpack",
-    "trails",
-    "trailjs",
-    "passport",
-    "jwt",
-    "auth",
-    "authentification",
-    "oauth",
-    "oauth2",
-    "openid",
-    "facebook",
-    "twitter",
-    "github",
-    "login"
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "files": [
+    "es",
+    "lib",
+    "umd"
   ],
+  "scripts": {
+    "build": "node ./node_modules/jnwb/lib/bin/nwb build-web-module",
+    "clean": "node ./node_modules/jnwb/lib/bin/nwb clean-module",
+    "test": "node ./node_modules/jnwb/lib/bin/nwb test",
+    "test:coverage": "node ./node_modules/jnwb/lib/bin/nwb test --coverage",
+    "test:watch": "node ./node_modules/jnwb/lib/bin/nwb test --server"
+  },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "boom": "^7.1.1",
@@ -33,13 +30,14 @@
     "lodash": "^4.17.4",
     "oauth2-server": "^3.0.0",
     "randomstring": "^1.1.5",
-    "trailpack": "^2.1.3"
+    "trailpack": "^2.1.3",
+    "trails": "^2.0.2"
   },
-  "devDependencies": {},
-  "scripts": {},
-  "engines": {
-    "node": ">= 4.0.0"
+  "devDependencies": {
+    "babel-preset-node6": "^11.0.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "jnwb": "^0.1.5"
   },
-  "repository": "https://github.com/jamrizzi/trailpack-oauth",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": "https://github.com/jamrizzi/trailpack-oauth"
 }
