@@ -1,8 +1,8 @@
 import Service from 'trails/service';
 import _ from 'lodash';
 import boom from 'boom';
-import { addSeconds } from 'date-fns';
 import jwt from 'jwt-simple';
+import { addSeconds } from 'date-fns';
 
 export default class OauthService extends Service {
 
@@ -25,11 +25,22 @@ export default class OauthService extends Service {
     };
   }
 
+  isOauthToken(token) {
+    const c = this.app.config;
+    try {
+      const payload = jwt.decode(token, c.oauth.jwt.secret);
+      return !!payload.client;
+    } catch(e) {
+      if (e.message === 'Token expired') throw boom.unauthorized(e.message);
+      throw e;
+    }
+  }
+
   generateAccessToken(client, user, scope) {
     const c = this.app.config;
     const payload = {
       clientId: client.id,
-      exp: addSeconds(new Date(), c.oauth.jwt.accessTokenExp).getSeconds(),
+      exp: addSeconds(new Date(), c.oauth.jwt.accessTokenExp),
       iss: c.oauth.jwt.iss,
       userId: user.id,
       scope
@@ -136,9 +147,11 @@ export default class OauthService extends Service {
       expires: code.expiresAt,
       redirectUri: code.redirectUri,
       scope: code.scope,
-      client: client.id,
+      client: await o.Client.findOne({ key: client.id }).then(client => client.id),
       user: user.id
-    }).populate('client').populate('user');
+    }).then((authorizationCode) => {
+      return o.AuthorizationCode.findOne(authorizationCode.id).populate('client').populate('user');
+    });
     return {
       authorizationCode: authorizationCode.code,
       expiresAt: authorizationCode.expires,

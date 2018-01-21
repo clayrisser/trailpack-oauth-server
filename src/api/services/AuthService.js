@@ -1,6 +1,6 @@
 import Service from 'trails/service';
 import boom from 'boom';
-import dateFns from 'date-fns';
+import { addSeconds } from 'date-fns';
 import jwt from 'jwt-simple';
 
 export default class AuthService extends Service {
@@ -38,7 +38,7 @@ export default class AuthService extends Service {
     const payload = {
       iss: c.oauth.jwt.iss,
       userId,
-      exp: dateFns.addDays(new Date(), 1)
+      exp: addSeconds(new Date(), c.oauth.jwt.accessTokenExp)
     };
     return jwt.encode(payload, c.oauth.jwt.secret);
   }
@@ -58,6 +58,6 @@ export default class AuthService extends Service {
   findAuthed(token) {
     const o = this.app.orm;
     const payload = this.decodeToken(token);
-    return o.User.findOne({ id: payload.userId });
+    return o.User.findOne({ id: payload.userId }).then(user => user.toJSON());
   }
 }
