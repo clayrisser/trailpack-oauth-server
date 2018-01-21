@@ -2,6 +2,7 @@ import Controller from 'trails/controller';
 import OAuth2Server from 'oauth2-server';
 import AccessDeniedError from 'oauth2-server/lib/errors/access-denied-error';
 import { AbstractGrantType } from 'oauth2-server';
+import url from 'url';
 
 const Request = OAuth2Server.Request;
 const Response = OAuth2Server.Response;
@@ -42,13 +43,15 @@ export default class OauthController extends Controller {
         if (token) {
           await s.OauthService.revokeToken(token);
         }
-        return res.json({ code: code });
+        return res.redirect(url.format({
+          pathname: code.redirectUri,
+          query: { code: code.authorizationCode }
+        }));
       }).catch((err) => {
         if (err instanceof AccessDeniedError) {
           return res.status(401).json({ message: err.message });
-        } else {
-          return next(err);
         }
+        throw err;
       });
     }).catch(next);
   }
