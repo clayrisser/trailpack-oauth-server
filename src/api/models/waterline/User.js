@@ -24,14 +24,6 @@ export default class User {
         collection: 'AuthorizationCode',
         via: 'client'
       },
-      refreshTokens: {
-        collection: 'RefreshToken',
-        via: 'client'
-      },
-      accessTokens: {
-        collection: 'AccessToken',
-        via: 'client'
-      },
 
       setPassword: function setPassword(password) {
         this.passwordHash = bCrypt.hashSync(password, bCrypt.genSaltSync(10), null)
@@ -41,6 +33,12 @@ export default class User {
       validatePassword: function validatePassword(password) {
         if (!this.passwordHash) throw boom.badRequest('Password not set');
         return bCrypt.compareSync(password, this.passwordHash);
+      },
+
+      toJSON: function toJSON() {
+        const obj = this.toObject();
+        if (obj.passwordHash) delete obj.passwordHash;
+        return obj;
       }
     };
   }

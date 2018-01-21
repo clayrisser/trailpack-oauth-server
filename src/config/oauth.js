@@ -18,5 +18,10 @@ export default {
 
   requireClientAuthentication: true,
 
-  jwtSecret: 'some-jwt-secret'
+  jwt: {
+    secret: 'some-jwt-secret',
+    iss: 'oauth',
+    accessTokenExp: 1800, // 30 minutes
+    refreshTokenExp: 1209600
+  }
 };

@@ -36,17 +36,18 @@ export default class AuthService extends Service {
   encodeToken(userId) {
     const c = this.app.config;
     const payload = {
+      iss: c.oauth.jwt.iss,
       userId,
       exp: dateFns.addDays(new Date(), 1)
     };
-    return jwt.encode(payload, c.oauth.jwtSecret);
+    return jwt.encode(payload, c.oauth.jwt.secret);
   }
 
   decodeToken(token) {
     const c = this.app.config;
     let payload = {};
     try {
-      payload = jwt.decode(token, c.oauth.jwtSecret);
+      payload = jwt.decode(token, c.oauth.jwt.secret);
     } catch (e) {
       if (e.message === 'Token expired') throw boom.unauthorized(e.message);
       throw e;

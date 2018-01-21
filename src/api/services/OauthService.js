@@ -1,12 +1,15 @@
 import Service from 'trails/service';
-import boom from 'boom';
-import dateFns from 'date-fns';
 import _ from 'lodash';
+import boom from 'boom';
+import { addSeconds } from 'date-fns';
+import jwt from 'jwt-simple';
 
 export default class OauthService extends Service {
 
   getModel() {
     return {
+      generateAccessToken: this.generateAccessToken,
+      generateRefreshToken: this.generateRefreshToken,
       getAccessToken: this.getAccessToken,
       getAuthorizationCode: this.getAuthorizationCode,
       getClient: this.getClient,
@@ -22,185 +25,142 @@ export default class OauthService extends Service {
     };
   }
 
-  getAccessToken(token) {
-    const o = this.app.orm;
-    return o.AccessToken.findOne({ token })
-      .populate('client')
-      .populate('user')
-      .then((accessToken) => {
-        const client = _.clone(accessToken.client);
-        client.id = client.accessKey;
-        return {
-          accessToken: accessToken.token,
-          accessTokenExpiresAt: accessToken.expires,
-          scope: accessToken.scope,
-          client: client,
-          user: accessToken.user
-        };
-      });
+  generateAccessToken(client, user, scope) {
+    const c = this.app.config;
+    const payload = {
+      clientId: client.id,
+      exp: addSeconds(new Date(), c.oauth.jwt.accessTokenExp).getSeconds(),
+      iss: c.oauth.jwt.iss,
+      userId: user.id,
+      scope
+    };
+    return jwt.encode(payload, c.oauth.jwt.secret);
   }
 
-  getAuthorizationCode(code) {
-    const o = this.app.orm;
-    return o.AuthorizationCode.findOne({ code })
-      .populate('client')
-      .populate('user')
-      .then((authorizationCode) => {
-        const client = _.clone(authorizationCode.client);
-        client.id = client.accessKey;
-        return {
-          code: authorizationCode.code,
-          expiresAt: authorizationCode.expires,
-          redirectUri: authorizationCode.redirectUri,
-          scope: authorizationCode.scope,
-          client: client,
-          user: authorizationCode.user
-        };
-      });
+  generateRefreshToken(client, user, scope) {
+    const c = this.app.config;
+    const payload = {
+      clientId: client.id,
+      exp: addSeconds(new Date(), c.oauth.jwt.refreshTokenExp),
+      iss: c.oauth.jwt.iss,
+      userId: user.id,
+      scope
+    };
+    return jwt.encode(payload, c.oauth.jwt.secret);
   }
 
-  getClient(accessKey, secretKey) {
+  async getAccessToken(token) {
+    const c = this.app.config;
     const o = this.app.orm;
-    let query = { id: accessKey };
-    if (secretKey) {
-      query = {
-        accessKey,
-        secretKey
-      }
+    try {
+      const payload = jwt.decode(token, c.oauth.jwt.secret);
+      return {
+        accessToken: token,
+        accessTokenExpiresAt: new Date(payload.exp),
+        scope: payload.scope,
+        user: await o.User.findOne(payload.userId).then(user => user.toJSON()),
+        client: await o.Client.findOne({ key: payload.clientId }).then(client => client.toJSON())
+      };
+    } catch(e) {
+      if (e.message === 'Token expired') throw boom.unauthorized(e.message);
+      throw e;
     }
-    return o.Client.findOne(query).then((client) => {
-      if (!client) return o.Client.findOne({ accessKey });
-      return client;
-    }).then((client) => {
-      client.id = client.accessKey;
-      return client;
-    });
   }
 
-  getRefreshToken(token) {
+  async getAuthorizationCode(code) {
     const o = this.app.orm;
-    return o.RefreshToken.findOne({ token })
-      .populate('client')
-      .populate('user')
-      .then((refreshToken) => {
-        const client = _.clone(refreshToken.client);
-        client.id = client.accessKey;
-        return {
-          refreshToken: refreshToken.token,
-          refreshTokenExpiresAt: refreshToken.expires,
-          scope: refreshToken.scope,
-          client: client,
-          user: refreshToken.user
-        };
-      });
+    const authorizationCode = await o.AuthorizationCode.findOne({
+      code
+    }).populate('client').populate('user');
+    return {
+      code: authorizationCode.code,
+      expiresAt: authorizationCode.expires,
+      redirectUri: authorizationCode.redirectUri,
+      scope: authorizationCode.scope,
+      client: authorizationCode.client.toJSON(),
+      user: authorizationCode.user.toJSON()
+    };
   }
 
-  getUser(username, password) {
+  async getClient(clientId, clientSecret) {
     const o = this.app.orm;
-    return o.User.findOne({ username }).then((user) => {
-      if (!user.validatePassword(password)) throw boom.badRequest('Invalid password');
-      return user;
-    });
+    let query = { key: clientId };
+    if (clientSecret) query.secret = clientSecret;
+    return o.Client.findOne(query).then(client => client.toJSON());
   }
 
-  getUserFromClient(client) {
+  async getRefreshToken(token) {
+    const c = this.app.config;
     const o = this.app.orm;
-    return o.Client.findOne({ accessKey: client.accessKey }).then((client) => {
-      return o.User.findOne({ id: client.id }).then((user) => {
-        return user;
-      });
-    });
+    try {
+      const payload = jwt.decode(token, c.oauth.jwt.secret);
+      return {
+        refreshToken: token,
+        refreshTokenExpiresAt: new Date(payload.exp),
+        scope: payload.scope,
+        user: await o.User.findOne(payload.userId).then(user => user.toJSON()),
+        client: await o.Client.findOne({ key: payload.clientId }).then(client => client.toJSON())
+      };
+    } catch(e) {
+      if (e.message === 'Token expired') throw boom.unauthorized(e.message);
+      throw e;
+    }
   }
 
-  revokeAuthorizationCode(code) {
+  async getUser(username, password) {
     const o = this.app.orm;
-    return o.AuthorizationCode.destroy({ code }).then((authorizationCode) => {
-      return !!authorizationCode;
-    });
+    const user = await o.User.findOne({ username });
+    if (!user.validatePassword(password)) throw boom.badRequest('Invalid password');
+    return user.toJSON();
   }
 
-  revokeToken(token) {
+  async getUserFromClient(client) {
     const o = this.app.orm;
-    return o.RefreshToken.destroy({ token }).then((refreshToken) => {
-      return !!refreshToken;
-    });
+    const { user } = await o.Client.findOne({ key: client.id }).populate('user');
+    return user.toJSON();
   }
 
-  saveAuthorizationCode(code, client, user) {
+  async revokeAuthorizationCode(code) {
     const o = this.app.orm;
-    return o.Client.findOne({ accessKey: client.id }).then((client) => {
-      return o.AuthorizationCode.create({
-        code: code.authorizationCode,
-        expires: code.expiresAt,
-        redirectUri: code.redirectUri,
-        scope: code.scope,
-        client: client.id,
-        user: user.id
-      }).populate('client').populate('user')
-        .then((authorizationCode) => {
-          return {
-            authorizationCode: authorizationCode.code,
-            expiresAt: authorizationCode.expires,
-            redirectUri: authorizationCode.redirectUri,
-            scope: authorizationCode.scope,
-            client: authorizationCode.client,
-            user: authorizationCode.user
-          }
-        });
-    });
+    return !!(await o.AuthorizationCode.destroy({ code }));
   }
 
-  saveToken(token, client, user) {
+  async revokeToken(token) {
+    return true;
+  }
+
+  async saveAuthorizationCode(code, client, user) {
     const o = this.app.orm;
-    return o.Client.findOne({ accessKey: client.id }).then((client) => {
-      const promises = [
-        o.AccessToken.create({
-          token: token.accessToken,
-          expires: token.accessTokenExpiresAt,
-          scope: token.scope,
-          client: client.id,
-          user: user.id
-        }).populate('client').populate('user')
-      ];
-      if (token.refreshToken) {
-        promises.push(o.RefreshToken.create({
-          token: token.refreshToken,
-          expires: token.refreshTokenExpiresAt,
-          scope: token.scope,
-          client: client.id,
-          user: user.id
-        }));
-      }
-      return Promise.all(promises).then((results) => {
-        const accessToken = results[0];
-        let refreshToken = null;
-        if (results.length > 1) refreshToken = results[1];
-        let response = {
-          accessToken: accessToken.token,
-          accessTokenExpiresAt: accessToken.expires,
-          scope: accessToken.scope,
-          client: accessToken.client,
-          user: accessToken.user
-        };
-        if (refreshToken) {
-          response = _.assign({}, response, {
-            refreshToken: refreshToken.token,
-            refreshTokenExpiresAt: refreshToken.expires
-          });
-        }
-        return response;
-      });
-    });
+    const authorizationCode = await o.AuthorizationCode.create({
+      code: code.authorizationCode,
+      expires: code.expiresAt,
+      redirectUri: code.redirectUri,
+      scope: code.scope,
+      client: client.id,
+      user: user.id
+    }).populate('client').populate('user');
+    return {
+      authorizationCode: authorizationCode.code,
+      expiresAt: authorizationCode.expires,
+      redirectUri: authorizationCode.redirectUri,
+      scope: authorizationCode.scope,
+      client: authorizationCode.client.toJSON(),
+      user: authorizationCode.user.toJSON()
+    };
   }
 
-  validateScope(user, client, scope) {
+  async saveToken(token, client, user) {
+    token.client = client;
+    token.user = user;
+    return token;
+  }
+
+  async validateScope(user, client, scope) { //
     const o = this.app.orm;
-    return o.Client.findOne({ accessKey: client.id }).then((client) => {
-      return true;
-    });
+    return true;
   }
 
-  verifyScope(token, scope) {
+  async verifyScope(token, scope) { //
     if (!token.scope) return false;
     const requestedScopes = scope.split(' ');
     const authorizedScopes = token.scope.split(' ');

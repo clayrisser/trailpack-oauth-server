@@ -13,12 +13,12 @@ export default class Client {
         unique: true,
         required: true
       },
-      accessKey: {
+      key: {
         type: 'string',
         unique: true,
         defaultsTo: randomstring.generate(32)
       },
-      secretKey: {
+      secret: {
         type: 'string',
         defaultsTo: randomstring.generate(32)
       },
@@ -44,13 +44,12 @@ export default class Client {
         collection: 'AuthorizationCode',
         via: 'client'
       },
-      refreshTokens: {
-        collection: 'RefreshToken',
-        via: 'client'
-      },
-      accessTokens: {
-        collection: 'AccessToken',
-        via: 'client'
+
+      toJSON: function toJSON() {
+        const obj = this.toObject();
+        obj.id = obj.key;
+        delete obj.key;
+        return obj;
       }
     };
   }
