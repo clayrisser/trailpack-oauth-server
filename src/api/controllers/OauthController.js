@@ -38,7 +38,7 @@ export default class OauthController extends Controller {
         const user = await s.AuthService.findAuthed(req.accessToken);
         const token = {
           accessToken: await s.OauthService.generateAccessToken(client, user, req.params.scope),
-          accessTokenExpiresAt: addSeconds(new Date(), c.oauth.jwt.accessTokenExp),
+          accessTokenExpiresAt: addSeconds(new Date(), c.oauth.accessTokenExpiresAt),
           scope: await s.OauthService.validateScope(user, client, req.params.scope),
         };
         await s.OauthService.saveToken(token, client, user);

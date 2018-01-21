@@ -1,5 +1,7 @@
 export default {
 
+  accessTokenLifetime: 3600,
+
   addAcceptedScopesHeader: true,
 
   addAuthorizedScopesHeader: true,
@@ -8,25 +10,20 @@ export default {
 
   allowEmptyState: false,
 
+  allowExtendedTokenAttributes: false,
+
   authorizationCodeLifetime: 300,
 
-  accessTokenLifetime: 3600,
+  issuer: 'oauth',
+
+  jwtSecret: 'some-jwt-secret',
 
   refreshTokenLifetime: 1209600,
-
-  allowExtendedTokenAttributes: false,
 
   requireClientAuthentication: true,
 
   scopes: [
     'read',
     'write'
-  ],
-
-  jwt: {
-    secret: 'some-jwt-secret',
-    iss: 'oauth',
-    accessTokenExp: 1800, // 30 minutes
-    refreshTokenExp: 1209600
-  }
+  ]
 };

@@ -28,7 +28,7 @@ export default class OauthService extends Service {
   isOauthToken(token) {
     const c = this.app.config;
     try {
-      const payload = jwt.decode(token, c.oauth.jwt.secret);
+      const payload = jwt.decode(token, c.oauth.jwtSecret);
       return !!payload.client;
     } catch(e) {
       if (e.message === 'Token expired') throw boom.unauthorized(e.message);
@@ -40,31 +40,31 @@ export default class OauthService extends Service {
     const c = this.app.config;
     const payload = {
       clientId: client.id,
-      exp: addSeconds(new Date(), c.oauth.jwt.accessTokenExp),
-      iss: c.oauth.jwt.iss,
+      exp: addSeconds(new Date(), c.oauth.accessTokenLifetime),
+      iss: c.oauth.issuer,
       userId: user.id,
       scope
     };
-    return jwt.encode(payload, c.oauth.jwt.secret);
+    return jwt.encode(payload, c.oauth.jwtSecret);
   }
 
   generateRefreshToken(client, user, scope) {
     const c = this.app.config;
     const payload = {
       clientId: client.id,
-      exp: addSeconds(new Date(), c.oauth.jwt.refreshTokenExp),
-      iss: c.oauth.jwt.iss,
+      exp: addSeconds(new Date(), c.oauth.refreshTokenLifetime),
+      iss: c.oauth.issuer,
       userId: user.id,
       scope
     };
-    return jwt.encode(payload, c.oauth.jwt.secret);
+    return jwt.encode(payload, c.oauth.jwtSecret);
   }
 
   async getAccessToken(token) {
     const c = this.app.config;
     const o = this.app.orm;
     try {
-      const payload = jwt.decode(token, c.oauth.jwt.secret);
+      const payload = jwt.decode(token, c.oauth.jwtSecret);
       return {
         accessToken: token,
         accessTokenExpiresAt: new Date(payload.exp),
@@ -104,7 +104,7 @@ export default class OauthService extends Service {
     const c = this.app.config;
     const o = this.app.orm;
     try {
-      const payload = jwt.decode(token, c.oauth.jwt.secret);
+      const payload = jwt.decode(token, c.oauth.jwtSecret);
       return {
         refreshToken: token,
         refreshTokenExpiresAt: new Date(payload.exp),
@@ -174,7 +174,7 @@ export default class OauthService extends Service {
     if (scope) {
       return scope.split(' ').filter(s => c.oauth.scopes.indexOf(s) >= 0).join(' ');
     }
-    return false;
+    return c.oauth.scopes.join(' ');
   }
 
   async verifyScope(token, scope) {
