@@ -31,7 +31,8 @@ export default class Client {
         defaultsTo: [
           'password',
           'authorization_code',
-          'refresh_token'
+          'refresh_token',
+          'client_credentials'
         ]
       },
       user: {

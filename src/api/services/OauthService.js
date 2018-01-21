@@ -5,6 +5,23 @@ import _ from 'lodash';
 
 export default class OauthService extends Service {
 
+  getModel() {
+    return {
+      getAccessToken: this.getAccessToken,
+      getAuthorizationCode: this.getAuthorizationCode,
+      getClient: this.getClient,
+      getRefreshToken: this.getRefreshToken,
+      getUser: this.getUser,
+      getUserFromClient: this.getUserFromClient,
+      revokeAuthorizationCode: this.revokeAuthorizationCode,
+      revokeToken: this.revokeToken,
+      saveAuthorizationCode: this.saveAuthorizationCode,
+      saveToken: this.saveToken,
+      validateScope: this.validateScope,
+      verifyScope: this.verifyScope
+    };
+  }
+
   getAccessToken(token) {
     const o = this.app.orm;
     return o.AccessToken.findOne({ token })

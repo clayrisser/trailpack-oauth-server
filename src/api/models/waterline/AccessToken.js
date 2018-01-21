@@ -1,4 +1,4 @@
-import dateFns from 'date-fns'
+import dateFns from 'date-fns';
 
 export default class AccessToken {
   config(app) {

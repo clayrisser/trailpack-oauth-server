@@ -28,20 +28,7 @@ export default class OauthTrailpack extends Trailpack {
     const c = this.app.config;
     this.mergedModels();
     this.app.oauth = new OAuth2Server({
-      model: {
-        getAccessToken: s.OauthService.getAccessToken,
-        getAuthorizationCode: s.OauthService.getAuthorizationCode,
-        getClient: s.OauthService.getClient,
-        getRefreshToken: s.OauthService.getRefreshToken,
-        getUser: s.OauthService.getUser,
-        getUserFromClient: s.OauthService.getUserFromClient,
-        revokeAuthorizationCode: s.OauthService.revokeAuthorizationCode,
-        revokeToken: s.OauthService.revokeToken,
-        saveAuthorizationCode: s.OauthService.saveAuthorizationCode,
-        saveToken: s.OauthService.saveToken,
-        validateScope: s.OauthService.validateScope,
-        verifyScope: s.OauthService.verifyScope
-      },
+      model: s.OauthService.getModel(),
       addAcceptedScopesHeader: c.oauth.addAcceptedScopesHeader,
       addAuthorizedScopesHeader: c.oauth.addAuthorizedScopesHeader,
       allowBearerTokensInQueryString: c.oauth.allowBearerTokensInQueryString,
