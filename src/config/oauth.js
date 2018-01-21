@@ -18,6 +18,11 @@ export default {
 
   requireClientAuthentication: true,
 
+  scopes: [
+    'read',
+    'write'
+  ],
+
   jwt: {
     secret: 'some-jwt-secret',
     iss: 'oauth',

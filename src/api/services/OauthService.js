@@ -168,12 +168,16 @@ export default class OauthService extends Service {
     return token;
   }
 
-  async validateScope(user, client, scope) { //
+  async validateScope(user, client, scope) {
     const o = this.app.orm;
-    return true;
+    const c = this.app.config;
+    if (scope) {
+      return scope.split(' ').filter(s => c.oauth.scopes.indexOf(s) >= 0).join(' ');
+    }
+    return false;
   }
 
-  async verifyScope(token, scope) { //
+  async verifyScope(token, scope) {
     if (!token.scope) return false;
     const requestedScopes = scope.split(' ');
     const authorizedScopes = token.scope.split(' ');
