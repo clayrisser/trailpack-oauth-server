@@ -4,8 +4,6 @@ export default class UserController extends Controller {
 
   create(req, res, next) {
     const s = this.app.services;
-    return s.UserService.create(req.body).then((user) => {
-      return res.json(user);
-    }).catch(next);
+    return s.UserService.create(req.body).then((user) => res.json(user)).catch(next);
   }
 }

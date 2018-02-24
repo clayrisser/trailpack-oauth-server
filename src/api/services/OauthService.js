@@ -95,7 +95,7 @@ export default class OauthService extends Service {
 
   async getClient(clientId, clientSecret) {
     const o = this.app.orm;
-    let query = { key: clientId };
+    const query = { key: clientId };
     if (clientSecret) query.secret = clientSecret;
     return o.Client.findOne(query).then(client => client.toJSON());
   }
@@ -149,9 +149,7 @@ export default class OauthService extends Service {
       scope: code.scope,
       client: await o.Client.findOne({ key: client.id }).then(client => client.id),
       user: user.id
-    }).then((authorizationCode) => {
-      return o.AuthorizationCode.findOne(authorizationCode.id).populate('client').populate('user');
-    });
+    }).then((authorizationCode) => o.AuthorizationCode.findOne(authorizationCode.id).populate('client').populate('user'));
     return {
       authorizationCode: authorizationCode.code,
       expiresAt: authorizationCode.expires,

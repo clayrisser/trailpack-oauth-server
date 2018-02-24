@@ -8,16 +8,14 @@ export default class AuthService extends Service {
   register({ username, password }) {
     const o = this.app.orm;
     return o.User.create({
-      username: username
-    }).then((user) => {
-      return new Promise((resolve, reject) => {
+      username
+    }).then((user) => new Promise((resolve, reject) => {
         user.setPassword(password);
         user.save((err) => {
           if (err) return reject(err);
           return resolve(user);
         });
-      });
-    });
+      }));
   }
 
   login({ username, password }) {

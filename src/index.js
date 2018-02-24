@@ -48,16 +48,12 @@ export default class OauthTrailpack extends Trailpack {
         if (models[key].config) {
           const oauthConfig = models[key].config(this.app);
           const defaultConfig = this.app.models[key].constructor.config(this.app);
-          this.app.models[key].constructor.config = (app) => {
-            return _.assign({}, oauthConfig, defaultConfig);
-          };
+          this.app.models[key].constructor.config = (app) => _.assign({}, oauthConfig, defaultConfig);
         }
         if (models[key].schema) {
           const oauthSchema = models[key].schema(this.app);
           const defaultSchema = this.app.models[key].constructor.schema(this.app);
-          this.app.models[key].constructor.schema = (app) => {
-            return _.assign({}, oauthSchema, defaultSchema);
-          };
+          this.app.models[key].constructor.schema = (app) => _.assign({}, oauthSchema, defaultSchema);
         }
       } else {
         this.app.models[key] = { constructor: models[key] };
