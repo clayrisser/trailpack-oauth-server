@@ -1,11 +1,11 @@
 import randomstring from 'randomstring';
 
 export default class Client {
-  config(app) {
+  static config(app) {
     return undefined;
   }
 
-  schema(app) {
+  static schema(app) {
     return {
       name: {
         type: 'string',
@@ -43,7 +43,6 @@ export default class Client {
         collection: 'AuthorizationCode',
         via: 'client'
       },
-
       toJSON: function toJSON() {
         const obj = this.toObject();
         obj.id = obj.key;

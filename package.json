@@ -9,7 +9,9 @@
     "url": "https://jam.jamrizzi.com"
   },
   "main": "lib/index.js",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "lint": "eslint ./",
     "lint:fix": "eslint --fix ./",
@@ -18,7 +20,6 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
     "boom": "^7.1.1",
     "date-fns": "^1.29.0",
     "joi": "^13.1.0",
@@ -57,5 +58,7 @@
   "engines": {
     "node": ">= 6.0.0"
   },
-  "eslintIgnore": ["lib"]
+  "eslintIgnore": [
+    "lib"
+  ]
 }

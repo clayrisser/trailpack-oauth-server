@@ -6,7 +6,7 @@ export default class AuthorizationCode extends Model {
     const { AuthorizationCode } = require(`./${
       app.config.database.orm
     }`).default;
-    return new AuthorizationCode().config(app, orm);
+    return AuthorizationCode.config(app, orm);
   }
 
   static schema(app, orm) {
@@ -14,6 +14,6 @@ export default class AuthorizationCode extends Model {
     const { AuthorizationCode } = require(`./${
       app.config.database.orm
     }`).default;
-    return new AuthorizationCode().schema(app, orm);
+    return AuthorizationCode.schema(app, orm);
   }
 }

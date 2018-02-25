@@ -6,6 +6,7 @@ import { addSeconds } from 'date-fns';
 
 const Request = OAuth2Server.Request;
 const Response = OAuth2Server.Response;
+const { env } = process;
 
 export default class OauthController extends Controller {
   authenticate(req, res, next) {
@@ -59,14 +60,17 @@ export default class OauthController extends Controller {
         }
         return this.app.oauth
           .authorize(request, response)
-          .then(async code =>
+          .then(async code => {
+            if (env.NODE_ENV !== 'production') {
+              this.log.info(`Authorization Code: ${code.authorizationCode}`);
+            }
             res.redirect(
               url.format({
                 pathname: code.redirectUri,
                 query: { code: code.authorizationCode }
               })
-            )
-          )
+            );
+          })
           .catch(err => {
             if (err instanceof AccessDeniedError) {
               return res.status(401).json({ message: err.message });
