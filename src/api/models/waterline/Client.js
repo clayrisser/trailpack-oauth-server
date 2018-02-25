@@ -1,4 +1,4 @@
-import randomstring from 'randomstring';
+import _ from 'lodash';
 
 export default class Client {
   static config(app) {
@@ -15,11 +15,11 @@ export default class Client {
       key: {
         type: 'string',
         unique: true,
-        defaultsTo: randomstring.generate(32)
+        defaultsTo: () => _.times(32, () => _.random(35).toString(36)).join('')
       },
       secret: {
         type: 'string',
-        defaultsTo: randomstring.generate(32)
+        defaultsTo: () => _.times(32, () => _.random(35).toString(36)).join('')
       },
       redirectUris: {
         type: 'array',

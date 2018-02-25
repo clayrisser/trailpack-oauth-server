@@ -1,5 +1,4 @@
 import Service from 'trails/service';
-import randomstring from 'randomstring';
 
 export default class ClientService extends Service {
   create(token, { name, redirectUris }) {
@@ -15,18 +14,22 @@ export default class ClientService extends Service {
   }
 
   update(clientId, properties) {
+    const o = this.app.orm;
     return o.Client.update(clientId, properties);
   }
 
   findOne(clientId) {
+    const o = this.app.orm;
     return o.Client.findOne(clientId);
   }
 
   find() {
+    const o = this.app.orm;
     return o.Client.find();
   }
 
   destroy(clientId) {
+    const o = this.app.orm;
     return o.Client.destroy(clientId);
   }
 }

@@ -19,6 +19,34 @@ export default [
   {
     method: 'POST',
     path: '/client',
-    handler: 'ClientController.create'
+    handler: 'ClientController.create',
+    config: {
+      validate: {
+        payload: joi.object({
+          name: joi
+            .string()
+            .min(3)
+            .max(32)
+            .required(),
+          redirectUris: joi
+            .array()
+            .items(joi.string().uri())
+            .min(1)
+            .required(),
+          grants: joi
+            .array()
+            .items(
+              joi
+                .string()
+                .valid(
+                  'password',
+                  'authorization_code',
+                  'refresh_token',
+                  'client_credentials'
+                )
+            )
+        })
+      }
+    }
   }
 ];
