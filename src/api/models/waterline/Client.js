@@ -1,7 +1,6 @@
 import randomstring from 'randomstring';
 
 export default class Client {
-
   config(app) {
     return undefined;
   }

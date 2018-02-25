@@ -1,9 +1,8 @@
 import dateFns from 'date-fns';
 
 export default class AuthorizationCode {
-
   config(app) {
-    return undefined
+    return undefined;
   }
 
   schema(app) {

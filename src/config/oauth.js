@@ -1,5 +1,4 @@
 export default {
-
   accessTokenLifetime: 3600,
 
   addAcceptedScopesHeader: true,
@@ -22,8 +21,5 @@ export default {
 
   requireClientAuthentication: true,
 
-  scopes: [
-    'read',
-    'write'
-  ]
+  scopes: ['read', 'write']
 };

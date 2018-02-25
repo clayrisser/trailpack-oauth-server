@@ -5,7 +5,6 @@ import jwt from 'jwt-simple';
 import { addSeconds } from 'date-fns';
 
 export default class OauthService extends Service {
-
   getModel() {
     return {
       generateAccessToken: this.generateAccessToken,
@@ -30,7 +29,7 @@ export default class OauthService extends Service {
     try {
       const payload = jwt.decode(token, c.oauth.jwtSecret);
       return !!payload.client;
-    } catch(e) {
+    } catch (e) {
       if (e.message === 'Token expired') throw boom.unauthorized(e.message);
       throw e;
     }
@@ -70,9 +69,11 @@ export default class OauthService extends Service {
         accessTokenExpiresAt: new Date(payload.exp),
         scope: payload.scope,
         user: await o.User.findOne(payload.userId).then(user => user.toJSON()),
-        client: await o.Client.findOne({ key: payload.clientId }).then(client => client.toJSON())
+        client: await o.Client.findOne({ key: payload.clientId }).then(client =>
+          client.toJSON()
+        )
       };
-    } catch(e) {
+    } catch (e) {
       if (e.message === 'Token expired') throw boom.unauthorized(e.message);
       throw e;
     }
@@ -82,7 +83,9 @@ export default class OauthService extends Service {
     const o = this.app.orm;
     const authorizationCode = await o.AuthorizationCode.findOne({
       code
-    }).populate('client').populate('user');
+    })
+      .populate('client')
+      .populate('user');
     return {
       code: authorizationCode.code,
       expiresAt: authorizationCode.expires,
@@ -110,9 +113,11 @@ export default class OauthService extends Service {
         refreshTokenExpiresAt: new Date(payload.exp),
         scope: payload.scope,
         user: await o.User.findOne(payload.userId).then(user => user.toJSON()),
-        client: await o.Client.findOne({ key: payload.clientId }).then(client => client.toJSON())
+        client: await o.Client.findOne({ key: payload.clientId }).then(client =>
+          client.toJSON()
+        )
       };
-    } catch(e) {
+    } catch (e) {
       if (e.message === 'Token expired') throw boom.unauthorized(e.message);
       throw e;
     }
@@ -121,19 +126,22 @@ export default class OauthService extends Service {
   async getUser(username, password) {
     const o = this.app.orm;
     const user = await o.User.findOne({ username });
-    if (!user.validatePassword(password)) throw boom.badRequest('Invalid password');
+    if (!user.validatePassword(password))
+      throw boom.badRequest('Invalid password');
     return user.toJSON();
   }
 
   async getUserFromClient(client) {
     const o = this.app.orm;
-    const { user } = await o.Client.findOne({ key: client.id }).populate('user');
+    const { user } = await o.Client.findOne({ key: client.id }).populate(
+      'user'
+    );
     return user.toJSON();
   }
 
   async revokeAuthorizationCode(code) {
     const o = this.app.orm;
-    return !!(await o.AuthorizationCode.destroy({ code }));
+    return !!await o.AuthorizationCode.destroy({ code });
   }
 
   async revokeToken(token) {
@@ -147,9 +155,15 @@ export default class OauthService extends Service {
       expires: code.expiresAt,
       redirectUri: code.redirectUri,
       scope: code.scope,
-      client: await o.Client.findOne({ key: client.id }).then(client => client.id),
+      client: await o.Client.findOne({ key: client.id }).then(
+        client => client.id
+      ),
       user: user.id
-    }).then((authorizationCode) => o.AuthorizationCode.findOne(authorizationCode.id).populate('client').populate('user'));
+    }).then(authorizationCode =>
+      o.AuthorizationCode.findOne(authorizationCode.id)
+        .populate('client')
+        .populate('user')
+    );
     return {
       authorizationCode: authorizationCode.code,
       expiresAt: authorizationCode.expires,
@@ -170,7 +184,10 @@ export default class OauthService extends Service {
     const o = this.app.orm;
     const c = this.app.config;
     if (scope) {
-      return scope.split(' ').filter(s => c.oauth.scopes.indexOf(s) >= 0).join(' ');
+      return scope
+        .split(' ')
+        .filter(s => c.oauth.scopes.indexOf(s) >= 0)
+        .join(' ');
     }
     return c.oauth.scopes.join(' ');
   }

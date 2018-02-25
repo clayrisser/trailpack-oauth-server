@@ -4,29 +4,32 @@ import { addSeconds } from 'date-fns';
 import jwt from 'jwt-simple';
 
 export default class AuthService extends Service {
-
   register({ username, password }) {
     const o = this.app.orm;
     return o.User.create({
       username
-    }).then((user) => new Promise((resolve, reject) => {
-        user.setPassword(password);
-        user.save((err) => {
-          if (err) return reject(err);
-          return resolve(user);
-        });
-      }));
+    }).then(
+      user =>
+        new Promise((resolve, reject) => {
+          user.setPassword(password);
+          user.save(err => {
+            if (err) return reject(err);
+            return resolve(user);
+          });
+        })
+    );
   }
 
   login({ username, password }) {
     const o = this.app.orm;
-    return o.User.findOne({ username }).then((user) => {
+    return o.User.findOne({ username }).then(user => {
       if (!user) {
         throw boom.notFound(`No account exists for username '${username}'`, {
           username
         });
       }
-      if (!user.validatePassword(password)) throw boom.badRequest('Invalid password');
+      if (!user.validatePassword(password))
+        throw boom.badRequest('Invalid password');
       return user;
     });
   }

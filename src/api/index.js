@@ -4,7 +4,8 @@ import controllers from './controllers';
 import policies from './policies';
 
 export default {
-  services,
   controllers,
-  policies
+  models,
+  policies,
+  services
 };

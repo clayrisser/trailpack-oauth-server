@@ -1,7 +1,6 @@
 import bCrypt from 'bcrypt-nodejs';
 
 export default class User {
-
   config(app) {
     return undefined;
   }
@@ -26,7 +25,11 @@ export default class User {
       },
 
       setPassword: function setPassword(password) {
-        this.passwordHash = bCrypt.hashSync(password, bCrypt.genSaltSync(10), null)
+        this.passwordHash = bCrypt.hashSync(
+          password,
+          bCrypt.genSaltSync(10),
+          null
+        );
         return this.passwordHash;
       },
 
