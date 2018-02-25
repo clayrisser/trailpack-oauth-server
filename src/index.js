@@ -17,10 +17,10 @@ module.exports = class OauthTrailpack extends Trailpack {
 
   async validate() {
     if (!_.includes(_.keys(this.app.packs), 'express')) {
-      throw new Error('This Trailpack work only for express');
+      throw new Error("This Trailpack requires 'trailpack-express'");
     }
     if (!_.includes(_.keys(this.app.packs), 'waterline')) {
-      throw new Error('This Trailpack only works with waterline');
+      throw new Error("This Trailpack requires 'trailpack-waterline'");
     }
   }
 

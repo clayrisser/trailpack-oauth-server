@@ -1,3 +1,3 @@
 import packageJSON from '../package';
 
-module.exports = packageJSON;
+export default packageJSON;
