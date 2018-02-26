@@ -21,5 +21,7 @@ export default {
 
   requireClientAuthentication: true,
 
-  scopes: ['read', 'write']
+  scopes: ['read', 'write'],
+
+  prefix: '/'
 };

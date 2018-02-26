@@ -27,6 +27,9 @@ module.exports = class OauthTrailpack extends Trailpack {
   configure() {
     const s = this.app.services;
     const c = this.app.config;
+    if (c.oauth.prefix) {
+      this.prefixRoutes();
+    }
     this.app.oauth = new OAuth2Server({
       model: s.OauthService.getModel(),
       addAcceptedScopesHeader: c.oauth.addAcceptedScopesHeader,
@@ -38,6 +41,15 @@ module.exports = class OauthTrailpack extends Trailpack {
       refreshTokenLifetime: c.oauth.refreshTokenLifetime,
       allowExtendedTokenAttributes: c.oauth.allowExtendedTokenAttributes,
       requireClientAuthentication: c.oauth.requireClientAuthentication
+    });
+  }
+
+  prefixRoutes() {
+    const c = this.app.config;
+    _.each(config.routes, oauthRoute => {
+      _.remove(c.routes, route => route.path === oauthRoute.path);
+      oauthRoute.path = (c.oauth.prefix + oauthRoute.path).replace('//', '/');
+      c.routes.push(oauthRoute);
     });
   }
 };
