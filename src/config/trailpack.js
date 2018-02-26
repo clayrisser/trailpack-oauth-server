@@ -7,7 +7,7 @@ export default {
         'OauthController',
         'UserController'
       ],
-      services: ['AuthService', 'ClientService', 'OauthService', 'UserService']
+      services: ['ClientService', 'OauthService']
     },
     config: []
   },

@@ -45,7 +45,9 @@ export default class Client {
       },
       toJSON: function toJSON() {
         const obj = this.toObject();
-        obj.id = obj.key;
+        _.assign(obj, {
+          id: obj.key
+        });
         delete obj.key;
         return obj;
       }

@@ -25,24 +25,12 @@ export default class OauthController extends Controller {
         const s = this.app.services;
         const request = new Request(req);
         const response = new Response(res);
-        if (req.cookies.access_token) {
-          req.accessToken = req.cookies.access_token;
-        } else {
-          const { authorization } = req.headers;
-          if (authorization.substr(0, 7) !== 'Bearer ')
-            throw boom.badRequest('Missing bearer token');
-          const bearerToken = authorization.substr(7);
-          if (!s.OauthService.isOauthToken(bearerToken)) {
-            req.accessToken = bearerToken;
-          }
-        }
-        if (req.accessToken) {
+        if (_.get(req, 'user.id')) {
           const client = await s.OauthService.getClient(req.query.client_id);
-          const user = await s.AuthService.findAuthed(req.accessToken);
           const token = {
             accessToken: await s.OauthService.generateAccessToken(
               client,
-              user,
+              req.user,
               req.params.scope
             ),
             accessTokenExpiresAt: addSeconds(
@@ -50,12 +38,12 @@ export default class OauthController extends Controller {
               c.oauth.accessTokenExpiresAt
             ),
             scope: await s.OauthService.validateScope(
-              user,
+              req.user,
               client,
               req.params.scope
             )
           };
-          await s.OauthService.saveToken(token, client, user);
+          await s.OauthService.saveToken(token, client, req.user);
           request.headers.authorization = `Bearer ${token.accessToken}`;
         }
         return this.app.oauth

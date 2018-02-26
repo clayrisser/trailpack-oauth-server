@@ -12,6 +12,9 @@ export default class User {
       authorizationCodes: {
         collection: 'AuthorizationCode',
         via: 'client'
+      },
+      toJSON: function toJSON() {
+        return this.toObject();
       }
     };
   }

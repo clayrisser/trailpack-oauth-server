@@ -1,35 +1,36 @@
 import Service from 'trails/service';
+import _ from 'lodash';
 
 export default class ClientService extends Service {
-  create(token, { name, redirectUris }) {
+  create(userId, payload) {
     const o = this.app.orm;
-    const s = this.app.services;
-    return s.AuthService.findAuthed(token).then(user =>
-      o.Client.create({
-        name,
-        redirectUris,
-        user: user.id
-      }).then(client => client)
-    );
+    return o.Client.create({
+      ...payload,
+      user: userId
+    });
   }
 
-  update(clientId, properties) {
+  update(userId, clientId, payload) {
     const o = this.app.orm;
-    return o.Client.update(clientId, properties);
+    return o.Client.update({ id: clientId, user: userId }, payload);
   }
 
-  findOne(clientId) {
+  findOne(userId, clientId) {
     const o = this.app.orm;
-    return o.Client.findOne(clientId);
+    return o.Client.findOne({ id: clientId, user: userId });
   }
 
-  find() {
+  find(userId, payload) {
+    payload = {
+      ...payload,
+      user: userId
+    };
     const o = this.app.orm;
-    return o.Client.find();
+    return o.Client.find(payload);
   }
 
-  destroy(clientId) {
+  destroy(userId, clientId) {
     const o = this.app.orm;
-    return o.Client.destroy(clientId);
+    return o.Client.destroy({ id: clientId, user: userId });
   }
 }
