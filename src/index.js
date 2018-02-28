@@ -1,7 +1,6 @@
 import Trailpack from 'trailpack';
 import _ from 'lodash';
 import OAuth2Server from 'oauth2-server';
-import models from './api/models';
 import config from './config';
 import pkg from './pkg';
 import api from './api';

@@ -1,9 +1,9 @@
 export default class User {
-  static config(app) {
+  static config() {
     return undefined;
   }
 
-  static schema(app) {
+  static schema() {
     return {
       clients: {
         collection: 'Client',

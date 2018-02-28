@@ -16,7 +16,7 @@ export default [
       validate: {
         headers: joi
           .object({
-            ['content-type']: joi
+            'content-type': joi
               .string()
               .valid('application/json')
               .required()
@@ -85,7 +85,7 @@ export default [
       validate: {
         headers: joi
           .object({
-            ['content-type']: joi
+            'content-type': joi
               .string()
               .valid('application/json')
               .required()

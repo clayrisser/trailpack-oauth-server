@@ -45,7 +45,7 @@ export default [
         headers: joi
           .object({
             authorization: joi.string().required(),
-            ['content-type']: joi
+            'content-type': joi
               .string()
               .valid('application/x-www-form-urlencoded')
               .required()

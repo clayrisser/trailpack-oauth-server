@@ -3,6 +3,9 @@
   "parser": "babel-eslint",
   "rules": {
     "class-methods-use-this": "off",
+    "no-shadow": "off",
+    "global-require": "off",
+    "import/no-dynamic-require": "off",
     "import/extensions": "off",
     "import/no-unresolved": "off",
     "no-param-reassign": "off",

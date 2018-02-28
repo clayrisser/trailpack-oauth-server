@@ -1,5 +1,4 @@
 import Service from 'trails/service';
-import _ from 'lodash';
 import boom from 'boom';
 import jwt from 'jwt-simple';
 import { addSeconds } from 'date-fns';
@@ -144,7 +143,7 @@ export default class Oauth extends Service {
     return !!await o.AuthorizationCode.destroy({ code });
   }
 
-  async revokeToken(token) {
+  async revokeToken() {
     return true;
   }
 
@@ -181,7 +180,6 @@ export default class Oauth extends Service {
   }
 
   async validateScope(user, client, scope) {
-    const o = this.app.orm;
     const c = this.app.config;
     if (scope) {
       return scope

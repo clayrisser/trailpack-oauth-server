@@ -1,5 +1,4 @@
 import Service from 'trails/service';
-import _ from 'lodash';
 
 export default class Client extends Service {
   create(userId, payload) {

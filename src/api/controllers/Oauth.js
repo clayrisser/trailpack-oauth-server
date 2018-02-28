@@ -1,11 +1,11 @@
 import AccessDeniedError from 'oauth2-server/lib/errors/access-denied-error';
 import Controller from 'trails/controller';
 import OAuth2Server from 'oauth2-server';
+import _ from 'lodash';
 import url from 'url';
 import { addSeconds } from 'date-fns';
 
-const Request = OAuth2Server.Request;
-const Response = OAuth2Server.Response;
+const { Request, Response } = OAuth2Server;
 const { env } = process;
 
 export default class Oauth extends Controller {

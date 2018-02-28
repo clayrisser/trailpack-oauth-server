@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
 export default class Client {
-  static config(app) {
+  static config() {
     return undefined;
   }
 
-  static schema(app) {
+  static schema() {
     return {
       name: {
         type: 'string',
