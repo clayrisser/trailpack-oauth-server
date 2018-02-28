@@ -1,7 +1,9 @@
 import Service from 'trails/service';
+import _ from 'lodash';
+import boom from 'boom';
 
 export default class Client extends Service {
-  create(userId, payload) {
+  async create(userId, payload) {
     const o = this.app.orm;
     return o.Client.create({
       ...payload,
@@ -9,17 +11,25 @@ export default class Client extends Service {
     });
   }
 
-  update(userId, clientId, payload) {
+  async update(userId, clientId, payload) {
     const o = this.app.orm;
-    return o.Client.update({ id: clientId, user: userId }, payload);
+    const clients = await o.Client.update(
+      { id: clientId, user: userId },
+      payload
+    );
+    const client = _.get(clients, '0');
+    if (!client) throw boom.notFound('client not found');
+    return client;
   }
 
-  findOne(userId, clientId) {
+  async findOne(userId, clientId) {
     const o = this.app.orm;
-    return o.Client.findOne({ id: clientId, user: userId });
+    const client = await o.Client.findOne({ id: clientId, user: userId });
+    if (!client) throw boom.notFound('client not found');
+    return client;
   }
 
-  find(userId, payload) {
+  async find(userId, payload) {
     payload = {
       ...payload,
       user: userId
@@ -28,7 +38,7 @@ export default class Client extends Service {
     return o.Client.find(payload);
   }
 
-  destroy(userId, clientId) {
+  async destroy(userId, clientId) {
     const o = this.app.orm;
     return o.Client.destroy({ id: clientId, user: userId });
   }
