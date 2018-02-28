@@ -8,7 +8,7 @@ const Request = OAuth2Server.Request;
 const Response = OAuth2Server.Response;
 const { env } = process;
 
-export default class OauthController extends Controller {
+export default class Oauth extends Controller {
   authenticate(req, res, next) {
     const request = new Request(req);
     const response = new Response(res);
@@ -26,9 +26,9 @@ export default class OauthController extends Controller {
         const request = new Request(req);
         const response = new Response(res);
         if (_.get(req, 'user.id')) {
-          const client = await s.OauthService.getClient(req.query.client_id);
+          const client = await s.Oauth.getClient(req.query.client_id);
           const token = {
-            accessToken: await s.OauthService.generateAccessToken(
+            accessToken: await s.Oauth.generateAccessToken(
               client,
               req.user,
               req.params.scope
@@ -37,13 +37,13 @@ export default class OauthController extends Controller {
               new Date(),
               c.oauth.accessTokenExpiresAt
             ),
-            scope: await s.OauthService.validateScope(
+            scope: await s.Oauth.validateScope(
               req.user,
               client,
               req.params.scope
             )
           };
-          await s.OauthService.saveToken(token, client, req.user);
+          await s.Oauth.saveToken(token, client, req.user);
           request.headers.authorization = `Bearer ${token.accessToken}`;
         }
         return this.app.oauth

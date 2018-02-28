@@ -1,7 +1,7 @@
 import Service from 'trails/service';
 import _ from 'lodash';
 
-export default class ClientService extends Service {
+export default class Client extends Service {
   create(userId, payload) {
     const o = this.app.orm;
     return o.Client.create({

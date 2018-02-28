@@ -25,7 +25,6 @@ module.exports = class OauthTrailpack extends Trailpack {
   }
 
   configure() {
-    const s = this.app.services;
     const c = this.app.config;
     if (c.oauth.prefix) {
       this.prefixRoutes();
@@ -33,8 +32,10 @@ module.exports = class OauthTrailpack extends Trailpack {
   }
 
   initialize() {
+    const c = this.app.config;
+    const s = this.app.services;
     this.app.oauth = new OAuth2Server({
-      model: s.OauthService.getModel(),
+      model: s.Oauth.getModel(),
       addAcceptedScopesHeader: c.oauth.addAcceptedScopesHeader,
       addAuthorizedScopesHeader: c.oauth.addAuthorizedScopesHeader,
       allowBearerTokensInQueryString: c.oauth.allowBearerTokensInQueryString,

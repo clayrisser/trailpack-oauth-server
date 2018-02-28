@@ -1,7 +1,7 @@
-import ClientController from './ClientController';
-import OauthController from './OauthController';
+import Client from './Client';
+import Oauth from './Oauth';
 
 export default {
-  ClientController,
-  OauthController
+  Client,
+  Oauth
 };

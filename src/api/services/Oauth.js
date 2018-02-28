@@ -4,7 +4,7 @@ import boom from 'boom';
 import jwt from 'jwt-simple';
 import { addSeconds } from 'date-fns';
 
-export default class OauthService extends Service {
+export default class Oauth extends Service {
   getModel() {
     return {
       generateAccessToken: this.generateAccessToken,

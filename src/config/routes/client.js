@@ -11,7 +11,7 @@ export default [
   {
     method: 'POST',
     path: '/client',
-    handler: 'ClientController.create',
+    handler: 'Client.create',
     config: {
       validate: {
         headers: joi
@@ -41,7 +41,7 @@ export default [
   {
     method: 'DELETE',
     path: '/client/{clientId}',
-    handler: 'ClientController.destroy',
+    handler: 'Client.destroy',
     config: {
       validate: {
         params: joi.object({
@@ -53,7 +53,7 @@ export default [
   {
     method: 'GET',
     path: '/client',
-    handler: 'ClientController.find',
+    handler: 'Client.find',
     config: {
       validate: {
         query: joi.object({
@@ -68,7 +68,7 @@ export default [
   {
     method: 'GET',
     path: '/client/{clientId}',
-    handler: 'ClientController.findOne',
+    handler: 'Client.findOne',
     config: {
       validate: {
         params: joi.object({
@@ -80,7 +80,7 @@ export default [
   {
     method: 'PUT',
     path: '/client/{clientId}',
-    handler: 'ClientController.update',
+    handler: 'Client.update',
     config: {
       validate: {
         headers: joi

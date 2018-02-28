@@ -4,7 +4,7 @@ export default [
   {
     method: 'GET',
     path: '/oauth/authenticate',
-    handler: 'OauthController.authenticate',
+    handler: 'Oauth.authenticate',
     config: {
       validate: {
         headers: joi
@@ -18,7 +18,7 @@ export default [
   {
     method: 'GET',
     path: '/oauth/authorize',
-    handler: 'OauthController.authorize',
+    handler: 'Oauth.authorize',
     config: {
       validate: {
         query: joi.object({
@@ -39,7 +39,7 @@ export default [
   {
     method: 'POST',
     path: '/oauth/token',
-    handler: 'OauthController.token',
+    handler: 'Oauth.token',
     config: {
       validate: {
         headers: joi

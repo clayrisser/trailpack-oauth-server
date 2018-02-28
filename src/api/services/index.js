@@ -1,7 +1,7 @@
-import ClientService from './ClientService';
-import OauthService from './OauthService';
+import Client from './Client';
+import Oauth from './Oauth';
 
 export default {
-  ClientService,
-  OauthService
+  Client,
+  Oauth
 };
