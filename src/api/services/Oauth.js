@@ -1,4 +1,5 @@
 import Service from 'trails/service';
+import _ from 'lodash';
 import boom from 'boom';
 import jwt from 'jwt-simple';
 import { addSeconds } from 'date-fns';
@@ -37,7 +38,7 @@ export default class Oauth extends Service {
   generateAccessToken(client, user, scope) {
     const c = this.app.config;
     const payload = {
-      clientId: client.id,
+      clientId: client.clientId,
       exp: addSeconds(new Date(), c.oauth.accessTokenLifetime),
       iss: c.oauth.issuer,
       userId: user.id,
@@ -49,7 +50,7 @@ export default class Oauth extends Service {
   generateRefreshToken(client, user, scope) {
     const c = this.app.config;
     const payload = {
-      clientId: client.id,
+      clientId: client.clientId,
       exp: addSeconds(new Date(), c.oauth.refreshTokenLifetime),
       iss: c.oauth.issuer,
       userId: user.id,
@@ -67,9 +68,11 @@ export default class Oauth extends Service {
         accessToken: token,
         accessTokenExpiresAt: new Date(payload.exp),
         scope: payload.scope,
-        user: await o.User.findOne(payload.userId).then(user => user.toJSON()),
-        client: await o.Client.findOne({ key: payload.clientId }).then(client =>
-          client.toJSON()
+        user: await o.User.findOne(payload.userId).then(user =>
+          user.toObject()
+        ),
+        client: await o.Client.findOne({ clientId: payload.clientId }).then(
+          client => client.toObject()
         )
       };
     } catch (e) {
@@ -90,16 +93,16 @@ export default class Oauth extends Service {
       expiresAt: authorizationCode.expires,
       redirectUri: authorizationCode.redirectUri,
       scope: authorizationCode.scope,
-      client: authorizationCode.client.toJSON(),
-      user: authorizationCode.user.toJSON()
+      client: authorizationCode.client.toObject(),
+      user: authorizationCode.user.toObject()
     };
   }
 
   async getClient(clientId, clientSecret) {
     const o = this.app.orm;
-    const query = { key: clientId };
-    if (clientSecret) query.secret = clientSecret;
-    return o.Client.findOne(query).then(client => client.toJSON());
+    const query = { clientId };
+    if (clientSecret) query.clientSecret = clientSecret;
+    return o.Client.findOne(query).then(client => client.toObject());
   }
 
   async getRefreshToken(token) {
@@ -111,9 +114,11 @@ export default class Oauth extends Service {
         refreshToken: token,
         refreshTokenExpiresAt: new Date(payload.exp),
         scope: payload.scope,
-        user: await o.User.findOne(payload.userId).then(user => user.toJSON()),
-        client: await o.Client.findOne({ key: payload.clientId }).then(client =>
-          client.toJSON()
+        user: await o.User.findOne(payload.userId).then(user =>
+          user.toObject()
+        ),
+        client: await o.Client.findOne({ clientId: payload.clientId }).then(
+          client => client.toObject()
         )
       };
     } catch (e) {
@@ -123,19 +128,25 @@ export default class Oauth extends Service {
   }
 
   async getUser(username, password) {
+    const c = this.app.config;
+    const s = this.app.services;
+    return _.get(s, c.oauth.handleGetUser)(username, password);
+  }
+
+  async handleGetUser(username, password) {
     const o = this.app.orm;
     const user = await o.User.findOne({ username });
     if (!user.validatePassword(password))
-      throw boom.badRequest('Invalid password');
-    return user.toJSON();
+      throw boom.badRequest('invalid password');
+    return user.toObject();
   }
 
   async getUserFromClient(client) {
     const o = this.app.orm;
-    const { user } = await o.Client.findOne({ key: client.id }).populate(
-      'user'
-    );
-    return user.toJSON();
+    const { user } = await o.Client.findOne({
+      clientId: client.clientId
+    }).populate('user');
+    return user.toObject();
   }
 
   async revokeAuthorizationCode(code) {
@@ -154,9 +165,7 @@ export default class Oauth extends Service {
       expires: code.expiresAt,
       redirectUri: code.redirectUri,
       scope: code.scope,
-      client: await o.Client.findOne({ key: client.id }).then(
-        client => client.id
-      ),
+      client: client.id,
       user: user.id
     }).then(authorizationCode =>
       o.AuthorizationCode.findOne(authorizationCode.id)
@@ -168,8 +177,8 @@ export default class Oauth extends Service {
       expiresAt: authorizationCode.expires,
       redirectUri: authorizationCode.redirectUri,
       scope: authorizationCode.scope,
-      client: authorizationCode.client.toJSON(),
-      user: authorizationCode.user.toJSON()
+      client: authorizationCode.client.toObject(),
+      user: authorizationCode.user.toObject()
     };
   }
 

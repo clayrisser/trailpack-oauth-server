@@ -1,12 +1,12 @@
 export default {
-  ClientController: {
+  Client: {
     create: ['OauthServer.isLoggedIn'],
     update: ['OauthServer.isLoggedIn'],
     destroy: ['OauthServer.isLoggedIn'],
     find: ['OauthServer.isLoggedIn'],
     findOne: ['OauthServer.isLoggedIn']
   },
-  OauthController: {
+  Oauth: {
     authenticate: [],
     authorize: [],
     token: []

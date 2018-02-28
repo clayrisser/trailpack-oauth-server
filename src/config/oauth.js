@@ -23,5 +23,7 @@ export default {
 
   scopes: ['read', 'write'],
 
-  prefix: '/'
+  prefix: '/',
+
+  handleGetUser: 'Oauth.handleGetUser'
 };

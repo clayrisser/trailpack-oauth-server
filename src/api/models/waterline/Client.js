@@ -1,8 +1,24 @@
 import _ from 'lodash';
+import boom from 'boom';
 
 export default class Client {
-  static config() {
-    return undefined;
+  static config(app) {
+    return {
+      async beforeValidate(payload, next) {
+        const o = app.orm;
+        const client = await o.Client.findOne({
+          name: payload.name
+        });
+        if (client) {
+          return next(
+            boom.badRequest(`"name" '${payload.name}' already registered`, {
+              name: payload.name
+            })
+          );
+        }
+        return next();
+      }
+    };
   }
 
   static schema() {
@@ -12,12 +28,12 @@ export default class Client {
         unique: true,
         required: true
       },
-      key: {
+      clientId: {
         type: 'string',
         unique: true,
         defaultsTo: () => _.times(32, () => _.random(35).toString(36)).join('')
       },
-      secret: {
+      clientSecret: {
         type: 'string',
         defaultsTo: () => _.times(32, () => _.random(35).toString(36)).join('')
       },
@@ -42,14 +58,6 @@ export default class Client {
       authorizationCodes: {
         collection: 'AuthorizationCode',
         via: 'client'
-      },
-      toJSON: function toJSON() {
-        const obj = this.toObject();
-        _.assign(obj, {
-          id: obj.key
-        });
-        delete obj.key;
-        return obj;
       }
     };
   }
