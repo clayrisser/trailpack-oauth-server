@@ -30,6 +30,9 @@ module.exports = class OauthTrailpack extends Trailpack {
     if (c.oauth.prefix) {
       this.prefixRoutes();
     }
+  }
+
+  initialize() {
     this.app.oauth = new OAuth2Server({
       model: s.OauthService.getModel(),
       addAcceptedScopesHeader: c.oauth.addAcceptedScopesHeader,
