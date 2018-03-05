@@ -24,15 +24,22 @@ export default class Oauth extends Service {
     };
   }
 
-  isOauthToken(token) {
+  decodeToken(token) {
     const c = this.app.config;
     try {
-      const payload = jwt.decode(token, c.oauth.jwtSecret);
-      return !!payload.clientId;
-    } catch (e) {
-      if (e.message === 'Token expired') throw boom.unauthorized(e.message);
-      throw e;
+      return jwt.decode(token, c.oauth.jwtSecret);
+    } catch (err) {
+      if (err.message === 'Token expired')
+        throw boom.unauthorized('token expired');
+      if (/^Unexpected\stoken\s/.test(err.message))
+        throw boom.badRequest('invalid token');
+      throw err;
     }
+  }
+
+  isOauthToken(token) {
+    const payload = this.decodeToken(token);
+    return !!payload.clientId;
   }
 
   generateAccessToken(client, user, scope) {
@@ -41,8 +48,9 @@ export default class Oauth extends Service {
       clientId: client.clientId,
       exp: addSeconds(new Date(), c.oauth.accessTokenLifetime),
       iss: c.oauth.issuer,
-      userId: user.id,
-      scope
+      oauth: true,
+      scope,
+      userId: user.id
     };
     return jwt.encode(payload, c.oauth.jwtSecret);
   }
@@ -53,32 +61,24 @@ export default class Oauth extends Service {
       clientId: client.clientId,
       exp: addSeconds(new Date(), c.oauth.refreshTokenLifetime),
       iss: c.oauth.issuer,
-      userId: user.id,
-      scope
+      scope,
+      userId: user.id
     };
     return jwt.encode(payload, c.oauth.jwtSecret);
   }
 
   async getAccessToken(token) {
-    const c = this.app.config;
     const o = this.app.orm;
-    try {
-      const payload = jwt.decode(token, c.oauth.jwtSecret);
-      return {
-        accessToken: token,
-        accessTokenExpiresAt: new Date(payload.exp),
-        scope: payload.scope,
-        user: await o.User.findOne(payload.userId).then(user =>
-          user.toObject()
-        ),
-        client: await o.Client.findOne({ clientId: payload.clientId }).then(
-          client => client.toObject()
-        )
-      };
-    } catch (e) {
-      if (e.message === 'Token expired') throw boom.unauthorized(e.message);
-      throw e;
-    }
+    const payload = this.decodeToken(token);
+    return {
+      accessToken: token,
+      accessTokenExpiresAt: new Date(payload.exp),
+      scope: payload.scope,
+      user: await o.User.findOne(payload.userId).then(user => user.toObject()),
+      client: await o.Client.findOne({ clientId: payload.clientId }).then(
+        client => client.toObject()
+      )
+    };
   }
 
   async getAuthorizationCode(code) {
@@ -106,25 +106,17 @@ export default class Oauth extends Service {
   }
 
   async getRefreshToken(token) {
-    const c = this.app.config;
     const o = this.app.orm;
-    try {
-      const payload = jwt.decode(token, c.oauth.jwtSecret);
-      return {
-        refreshToken: token,
-        refreshTokenExpiresAt: new Date(payload.exp),
-        scope: payload.scope,
-        user: await o.User.findOne(payload.userId).then(user =>
-          user.toObject()
-        ),
-        client: await o.Client.findOne({ clientId: payload.clientId }).then(
-          client => client.toObject()
-        )
-      };
-    } catch (e) {
-      if (e.message === 'Token expired') throw boom.unauthorized(e.message);
-      throw e;
-    }
+    const payload = this.decodeToken(token);
+    return {
+      refreshToken: token,
+      refreshTokenExpiresAt: new Date(payload.exp),
+      scope: payload.scope,
+      user: await o.User.findOne(payload.userId).then(user => user.toObject()),
+      client: await o.Client.findOne({ clientId: payload.clientId }).then(
+        client => client.toObject()
+      )
+    };
   }
 
   async getUser(username, password) {

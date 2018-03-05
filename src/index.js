@@ -1,12 +1,14 @@
+import OAuth2Server from 'oauth2-server';
 import Trailpack from 'trailpack';
 import _ from 'lodash';
-import OAuth2Server from 'oauth2-server';
+import boom from 'boom';
 import config from './config';
 import pkg from './pkg';
 import api from './api';
 
 module.exports = class OauthTrailpack extends Trailpack {
   constructor(app) {
+    injectScopePolicy(app);
     super(app, {
       config,
       pkg,
@@ -56,3 +58,33 @@ module.exports = class OauthTrailpack extends Trailpack {
     });
   }
 };
+
+function injectScopePolicy(app) {
+  const oauthConfig = _.extend(
+    {},
+    config.oauth,
+    _.get(app, 'config.oauth', {})
+  );
+  const { scopes } = oauthConfig;
+  _.each(scopes, scope => {
+    api.policies.Scope.prototype[`is${_.upperFirst(scope)}`] = (
+      req,
+      res,
+      next
+    ) => {
+      try {
+        const oauthScope = _.get(req, [oauthConfig.oauthSession, 'scope']);
+        if (oauthScope) {
+          const scopes = oauthScope.split(' ');
+          if (!_.includes(scopes, scope))
+            throw boom.forbidden(`access to '${scope}' scope denied`, {
+              scope
+            });
+        }
+        return next();
+      } catch (err) {
+        return next(err);
+      }
+    };
+  });
+}

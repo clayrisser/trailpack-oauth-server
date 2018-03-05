@@ -25,12 +25,12 @@ export default class Oauth extends Controller {
         const s = this.app.services;
         const request = new Request(req);
         const response = new Response(res);
-        if (_.get(req, 'user.id')) {
+        if (_.get(req, c.oauth.userSession, {}).id) {
           const client = await s.Oauth.getClient(req.query.client_id);
           const token = {
             accessToken: await s.Oauth.generateAccessToken(
               client,
-              req.user,
+              _.get(req, c.oauth.userSession, {}),
               req.params.scope
             ),
             accessTokenExpiresAt: addSeconds(
@@ -38,12 +38,16 @@ export default class Oauth extends Controller {
               c.oauth.accessTokenExpiresAt
             ),
             scope: await s.Oauth.validateScope(
-              req.user,
+              _.get(req, c.oauth.userSession, {}),
               client,
               req.params.scope
             )
           };
-          await s.Oauth.saveToken(token, client, req.user);
+          await s.Oauth.saveToken(
+            token,
+            client,
+            _.get(req, c.oauth.userSession, {})
+          );
           request.headers.authorization = `Bearer ${token.accessToken}`;
         }
         return this.app.oauth

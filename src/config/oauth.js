@@ -25,5 +25,9 @@ export default {
 
   prefix: '/',
 
-  handleGetUser: 'Oauth.handleGetUser'
+  handleGetUser: 'Oauth.handleGetUser',
+
+  userSession: 'user',
+
+  oauthSession: 'oauth'
 };
