@@ -28,7 +28,7 @@ export default class Oauth extends Service {
     const c = this.app.config;
     try {
       const payload = jwt.decode(token, c.oauth.jwtSecret);
-      return !!payload.client;
+      return !!payload.clientId;
     } catch (e) {
       if (e.message === 'Token expired') throw boom.unauthorized(e.message);
       throw e;
@@ -203,6 +203,6 @@ export default class Oauth extends Service {
     if (!token.scope) return false;
     const requestedScopes = scope.split(' ');
     const authorizedScopes = token.scope.split(' ');
-    return requestedScopes.every(s => authorizedScopes.indexOf(s) >= 0);
+    return requestedScopes.every(scope => authorizedScopes.indexOf(scope) >= 0);
   }
 }
