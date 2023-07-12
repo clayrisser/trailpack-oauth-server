@@ -6,6 +6,8 @@
 
 Trailpack to run OAuth 2 server on Trails application
 
+![](assets/trailpack-oauth-server.png)
+
 Please &#9733; this repo if you found it useful &#9733; &#9733; &#9733;
 
 
